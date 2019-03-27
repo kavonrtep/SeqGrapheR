@@ -1,0 +1,26 @@
+#+TITLE: SeqGrapheR
+
+SeqGrapheR is a program for vizualization and exploration of sequence based
+graphs generated in RepeatExplorer output. More information about RepeatExplorer can be found
+on http://repeatexplorer.org/
+
+Introduction to SeqGrapheR can be found in [[vignette/SeqGrapheR.pdf][vignette]].
+
+* Installation
+
+Installation require R package =devtools=
+
+#+BEGIN_SRC R
+library(devtools)
+install_github("kavonrtep/SeqGrapheR")
+#+END_SRC
+
+* How to run SeqGrapheR
+
+In R session run:
+#+BEGIN_SRC R
+library(SeqGrapheR)
+# start GUI:
+SeqGrapheR()
+#+END_SRC
+
