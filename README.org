@@ -4,7 +4,7 @@ SeqGrapheR is a program for vizualization and exploration of sequence based
 graphs generated in RepeatExplorer output. More information about RepeatExplorer can be found
 on http://repeatexplorer.org/
 
-Introduction to SeqGrapheR can be found in [[vignette/SeqGrapheR.pdf][vignette]].
+Introduction to SeqGrapheR can be found in [[https://github.com/kavonrtep/SeqGrapheR/blob/master/vignettes/SeqGrapheR.pdf][vignette]]
 
 * Installation
 
