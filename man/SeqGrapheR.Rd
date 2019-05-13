@@ -7,7 +7,7 @@
 SeqGrapheR()
 }
 \description{
-Function start GUI for interactive graph based visualization of DNA sequence clusters. 
+Function start GUI for interactive graph based visualization of DNA sequence clusters.
 The GUI is written using the gWidgets and use RGtk2 graphical toolkit. This function
 does not take any parameters. Note that SeqGrapheR require external programs
 blastall and dotter for some functions.

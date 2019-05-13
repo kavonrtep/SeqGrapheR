@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64mm"
+   height="64mm"
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg1806"
+   inkscape:version="0.92.2 (unknown)"
+   sodipodi:docname="newlistfromeditor.svg">
+  <defs
+     id="defs1800">
+    <marker
+       inkscape:stockid="TriangleOutS"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutS"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2708"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.2)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutL"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2702"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path2587"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#a02c2c;stroke-opacity:1;fill:#a02c2c;fill-opacity:1"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true">
+      <path
+         id="path2563"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#a02c2c;stroke-width:1pt;stroke-opacity:1;fill:#a02c2c;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="82.972967"
+     inkscape:cy="319.60157"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showborder="true"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     inkscape:window-width="2556"
+     inkscape:window-height="1400"
+     inkscape:window-x="2560"
+     inkscape:window-y="18"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata1803">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-233)">
+    <g
+       id="g6260"
+       transform="translate(0,-0.63054278)">
+      <rect
+         ry="1.0581149"
+         y="252.42412"
+         x="0.56325418"
+         height="4.8370962"
+         width="27.201492"
+         id="rect2521-0"
+         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.29800147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <rect
+         ry="1.0581149"
+         y="264.46948"
+         x="0.56325418"
+         height="4.8370962"
+         width="27.201492"
+         id="rect2521-3"
+         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.29800147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <rect
+         ry="1.0581149"
+         y="276.51483"
+         x="0.56325418"
+         height="4.8370962"
+         width="27.201492"
+         id="rect2521-6"
+         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.29800147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.17943954;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 54.239316,271.3476 c -1.645013,-1.69733 -2.292222,-2.04669 -2.883174,-1.5563 -0.394844,0.32764 -0.459189,-0.169 -0.459189,-3.54423 0,-3.76383 0.02374,-3.90379 0.577218,-3.40295 0.542369,0.49078 0.68167,0.41656 2.307286,-1.22931 0.951539,-0.96339 1.818961,-1.75162 1.927604,-1.75162 0.34024,0 2.861966,2.44333 2.861966,2.773 0,0.17243 -0.819376,1.07076 -1.820834,1.9963 l -1.820831,1.68279 1.820831,1.76353 c 1.001458,0.96996 1.820834,1.86292 1.820834,1.98437 0,0.3414 -2.384207,2.58859 -2.746429,2.58859 -0.176722,0 -0.890101,-0.58688 -1.585282,-1.30417 z"
+       id="path6173"
+       inkscape:connector-curvature="0" />
+    <g
+       id="g6255"
+       transform="matrix(1.082394,0,0,1.0962894,-115.81372,-8.7871794)">
+      <rect
+         ry="1.0581149"
+         y="248.46835"
+         x="138.72366"
+         height="4.8370962"
+         width="27.201492"
+         id="rect2521-0-6"
+         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.29800147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <rect
+         transform="rotate(90)"
+         ry="1.0581149"
+         y="-154.74297"
+         x="237.28616"
+         height="4.8370962"
+         width="27.201492"
+         id="rect2521-0-9"
+         style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.29800147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
