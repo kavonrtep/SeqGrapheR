@@ -1548,9 +1548,7 @@ SeqGrapheR=function(){    # main function
 	iconDir=paste(system.file('images',package='SeqGrapheR'),'/',sep='')   # for package
 	iconsColor=c("color1.png", "color2.png", "color3.png", "color4.png", "color5.png","color6.png", "color7.png", "color8.png", "color9.png")
   iconsShape=c("shape1.png", "shape2.png", "shape3.png", "shape4.png", "shape5.png","shape6.png", "shape7.png")
-
-  iconDir_tmp="/mnt/raid/users/petr/workspace/SeqGrapheR-package/inkscape/"
-  icon_files = paste0(iconDir_tmp,"/",
+  icon_files = paste0(iconDir,"/",
                       c(
                         "deletelist.svg",
                         "deleteyellowfromeditor.svg",
