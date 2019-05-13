@@ -10,7 +10,7 @@
 #' @importFrom grDevices dev.off png rgb
 #' @importFrom graphics plot.new points segments plot abline hist par
 #' @import Biostrings
-#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible
+#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible addStockIcons
 #' @importFrom igraph fastgreedy.community "V<-" membership vcount graph.data.frame simplify V E get.edgelist neighborhood  degree ecount layout.fruchterman.reingold induced.subgraph
 #' @importFrom rggobi edges "edges<-" ids ggobi "glyph_colour<-" "glyph_type<-" "glyph_size<-" glyph_colour ggobi_count ggobi_get glyph_type glyph_size displays pmode ggobi_display_get_tour_projection colorscheme "$<-.GGobi" "[[.GGobi" "ids<-" "[<-.GGobi" "[.GGobi" "[[<-.GGobi" "$<-.GGobi" "[.GGobiData" "[[<-.GGobiData" "[[.GGobiData" "$<-.GGobiData" "$.GGobiData" "variables<-" "shadowed<-"
 #' @import gWidgetsRGtk2
