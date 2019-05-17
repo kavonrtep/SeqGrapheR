@@ -10,9 +10,9 @@
 #' @importFrom grDevices dev.off png rgb
 #' @importFrom graphics plot.new points segments plot abline hist par
 #' @import Biostrings
-#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible addStockIcons
+#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible addStockIcons gtoolbar gaction gnotebook
 #' @importFrom igraph fastgreedy.community "V<-" membership vcount graph.data.frame simplify V E get.edgelist neighborhood  degree ecount layout.fruchterman.reingold induced.subgraph
-#' @importFrom rggobi edges "edges<-" ids ggobi "glyph_colour<-" "glyph_type<-" "glyph_size<-" glyph_colour ggobi_count ggobi_get glyph_type glyph_size displays pmode ggobi_display_get_tour_projection colorscheme "$<-.GGobi" "[[.GGobi" "ids<-" "[<-.GGobi" "[.GGobi" "[[<-.GGobi" "$<-.GGobi" "[.GGobiData" "[[<-.GGobiData" "[[.GGobiData" "$<-.GGobiData" "$.GGobiData" "variables<-" "shadowed<-"
+#' @importFrom rggobi edges "edges<-" ids ggobi "glyph_colour<-" "glyph_type<-" "glyph_size<-" glyph_colour ggobi_count ggobi_get glyph_type glyph_size displays pmode ggobi_display_get_tour_projection colorscheme "$<-.GGobi" "[[.GGobi" "ids<-" "[<-.GGobi" "[.GGobi" "[[<-.GGobi" "$<-.GGobi" "[.GGobiData" "[[<-.GGobiData" "[[.GGobiData" "$<-.GGobiData" "$.GGobiData" "variables<-" "shadowed<-" "imode" "imode<-" "pmode" "pmode<-"
 #' @import gWidgetsRGtk2
 #' @import cairoDevice
 ## @importMethodsFrom igraph
@@ -991,8 +991,16 @@ SeqGrapheR=function(){    # main function
 			showDotter()
 		}
 	}
+
+  defHandlerDotterContig=function(h,...){
+    ##check if graph is loaded:
+		if (DataLoaded()){
+			showDotter(reads=FALSE)
+		}
+	}
 	showDotter=function(reads=TRUE){
     if (reads){
+      ## dotter from reads
       if (!is.null(envGL$GL$Seq)){
         selectedIds=V(envGL$GL$G)$name[glyph_colour(envGL$g[1])==9]
         if (length(selectedIds)!=0){
@@ -1009,7 +1017,17 @@ SeqGrapheR=function(){    # main function
     }else{
       ## dotter from contigs
       if (!is.null(envGL$contigs)){
-        selectedContigs=NULL
+        s1 = svalue(gui$mainData,index=FALSE)
+        s2 = svalue(gui$ListInfo,index=FALSE)
+        selectedContigsName = envGL$IdsListDataFrame[unique(c(s1,s2)),"Subset"]
+        # TODO add contigs from list info too
+        contigs = envGL$contigs[names(envGL$contigs) %in% selectedContigsName]
+
+        if (length(contigs) == 0){
+          gmessage("No contigs selected")
+        }
+        dotter(contigs)
+
       }else{
         gmessage("No contigs loaded")
       }
@@ -1568,7 +1586,8 @@ SeqGrapheR=function(){    # main function
                         "xyview.svg",
                         "3dview.svg",
                         "deselect.svg",
-                        "dotter.svg"
+                        "dotter.svg",
+                        "dotter_contig.svg"
                       ))
 
   addStockIcons(gsub(".svg$","", basename(icon_files)), icon_files)
@@ -1757,8 +1776,8 @@ SeqGrapheR=function(){    # main function
                                   handler=defHandlerDotter,
                               tooltip="Show dotplot from selected reads"),
       dotterFromContigs=gaction(label="Dotplot from contigs",
-                              icon="dotter" ,
-                              handler=defHandlerDotter,
+                              icon="dotter_contig" ,
+                              handler=defHandlerDotterContig,
                               tooltip="Show dotplot from selected contigs")
     ),container=gui$iconStrip2, style="both-horiz")
 
