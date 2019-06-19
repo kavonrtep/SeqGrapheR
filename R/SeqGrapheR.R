@@ -10,7 +10,7 @@
 #' @importFrom grDevices dev.off png rgb
 #' @importFrom graphics plot.new points segments plot abline hist par
 #' @import Biostrings
-#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible addStockIcons gtoolbar gaction gnotebook
+#' @importFrom gWidgets svalue gconfirm gfile ginput delete gmessage galert dispose ggroup ggraphics gslider glabel gwindow gtable gbutton size addhandlerdestroy gmenu gframe gimage addSpace glayout gtext gstatusbar visible addStockIcons gtoolbar gaction gnotebook gfilebrowse gcheckbox
 #' @importFrom igraph fastgreedy.community "V<-" membership vcount graph.data.frame simplify V E get.edgelist neighborhood  degree ecount layout.fruchterman.reingold induced.subgraph
 #' @importFrom rggobi edges "edges<-" ids ggobi "glyph_colour<-" "glyph_type<-" "glyph_size<-" glyph_colour ggobi_count ggobi_get glyph_type glyph_size displays pmode ggobi_display_get_tour_projection colorscheme "$<-.GGobi" "[[.GGobi" "ids<-" "[<-.GGobi" "[.GGobi" "[[<-.GGobi" "$<-.GGobi" "[.GGobiData" "[[<-.GGobiData" "[[.GGobiData" "$<-.GGobiData" "$.GGobiData" "variables<-" "shadowed<-" "imode" "imode<-" "pmode" "pmode<-"
 #' @import gWidgetsRGtk2
@@ -25,17 +25,17 @@
 SeqGrapheR=function(){    # main function
 	options(warn=-1)
 	options("guiToolkit"="RGtk2")
-	#check for Biostring version
+                                        #check for Biostring version
 	if (exists("readDNAStringSet")){
-			read.DNAStringSet=readDNAStringSet
-			read.BStringSet=readBStringSet
-			write.XStringSet=writeXStringSet
+    read.DNAStringSet=readDNAStringSet
+    read.BStringSet=readBStringSet
+    write.XStringSet=writeXStringSet
 
-		}
+  }
 
 
-	########################## INTERNAL  FUNCTIONS ################################################################
-	########################install.packages("SeqGrapheR_0.4.8.3.tar.gz",repos=NULL)##############################################################################
+########################## INTERNAL  FUNCTIONS ################################################################
+########################install.packages("SeqGrapheR_0.4.8.3.tar.gz",repos=NULL)##############################################################################
 
 
 	formatDNA=function(dna,width=60){
@@ -45,7 +45,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	writeFasta=function(seqs,file,format=F){
-		#this function is to replace write.XStringSet which is too slow (bug in Biostrings??)
+                                        #this function is to replace write.XStringSet which is too slow (bug in Biostrings??)
 		seqnames=names(seqs)
 		seqchars=as.character(seqs)
 		if (format){
@@ -76,22 +76,22 @@ SeqGrapheR=function(){    # main function
 	blastall=function(databaseSeq,querySeq,programname='blastn',m=8,params="",protein=FALSE,databaseParams='')
 	{
 
-		# wrapper for blastall program
-		# blastall -p programname -d databasefilename -i queryfilename -o outputfilename
-		# m=8 specify tabular output - then type of output is data.frame
-		#create temporary files with sequences
+                                        # wrapper for blastall program
+                                        # blastall -p programname -d databasefilename -i queryfilename -o outputfilename
+                                        # m=8 specify tabular output - then type of output is data.frame
+                                        #create temporary files with sequences
 		database=tempfile()
 		query=tempfile()
 		output=tempfile()
 
-		#check names
+                                        #check names
 		writeFasta(databaseSeq,file=database)
 		writeFasta(querySeq,file=query)
 
-		#write.XStringSet(databaseSeq,file=database,format='fasta')   # too slow!!!
-		#write.XStringSet(querySeq,file=query,format='fasta')
+                                        #write.XStringSet(databaseSeq,file=database,format='fasta')   # too slow!!!
+                                        #write.XStringSet(querySeq,file=query,format='fasta')
 
-		#create database:
+                                        #create database:
 		cmd=paste("formatdb -i",database,"-p",protein,databaseParams)
 		system(cmd)
 		cmd=paste("blastall -p",programname,"-d",database,"-i",query,"-m",m,params,'-o',output)
@@ -110,19 +110,19 @@ SeqGrapheR=function(){    # main function
 
 	megablast=function(databaseSeq,querySeq,D=3,params="",databaseParams='')
 	{	# wrapper for mgblast program
-		#megablast -d databasefilename -i queryfilename -D 2 -o outputfile
-		# D=3 specify tabular output
+                                        #megablast -d databasefilename -i queryfilename -D 2 -o outputfile
+                                        # D=3 specify tabular output
 
 		if (params=='tgicl'){
 			params=' -s 25 -W18 -UF -X40 -JF -F "m D" -v90000000 -b90000000 -H 3000'
 		}
-		#create temporary files with sequences
+                                        #create temporary files with sequences
 		database=tempfile()
 		query=tempfile()
 		output=tempfile()
 		write.XStringSet(databaseSeq,filepath=database,format='fasta')
 		write.XStringSet(querySeq,filepath=query,format='fasta')
-		#create database:
+                                        #create database:
 		cmd=paste("formatdb -i",database,"-p F",databaseParams)
 		system(cmd)
 		cmd=paste("megablast","-d",database,"-i",query,"-D",D,params,'-o',output)
@@ -141,7 +141,7 @@ SeqGrapheR=function(){    # main function
 
 
 	dotter=function(seq1,seq2=NULL){
-		#require external program dotter
+                                        #require external program dotter
 
 		if (is.null(seq2)) {
 			seq2=seq1
@@ -168,16 +168,16 @@ SeqGrapheR=function(){    # main function
 
 	blast2graph=function(blastTable,options=list(thr=200,LCOV=55,SCOV=NULL,PID=90,OVL=NULL),method="thr",seqs=NULL)
 	{
-		# create graph from blast table
-		# blast table can be fitred for quality of hit using thr param - minimal bitScore when method is thr
-		# or  LCOV,SCOV,OVL,PID parameters when method is cov - then sequences must be provided to get seq length
+                                        # create graph from blast table
+                                        # blast table can be fitred for quality of hit using thr param - minimal bitScore when method is thr
+                                        # or  LCOV,SCOV,OVL,PID parameters when method is cov - then sequences must be provided to get seq length
 		N=dim(blastTable)[1]
 		ind=1:N
 		i=1
-		# blastTable .. output of blast -tabular formatdb
-		# thr - blast bitScore threshold
-		# seqs - sequences - used when thrseq as threshold is used
-		# thrseq - threshold as a function of the sequence length
+                                        # blastTable .. output of blast -tabular formatdb
+                                        # thr - blast bitScore threshold
+                                        # seqs - sequences - used when thrseq as threshold is used
+                                        # thrseq - threshold as a function of the sequence length
 		if (method=='thr'){
 			vvw=blastTable[,c(1,2,12)]
 			vvw=vvw[vvw[,3]>options$thr,]
@@ -248,14 +248,14 @@ SeqGrapheR=function(){    # main function
 			readNames=gsub(" +.+$","",readNames)
 			contigReads[[i]]=readNames
 		}
-		#sort by number of reads
+                                        #sort by number of reads
 		ord=order(sapply(contigReads,length),decreasing=TRUE)
 		contigNames=contigNames[ord]
 		contigReads=contigReads[ord]
 		contigNames=gsub(" .+$","",contigNames)
 		contigNames=gsub(">","",contigNames)
 		names(contigReads)=contigNames
-		# print contigs summary
+                                        # print contigs summary
 		contigReads
 	}
 
@@ -292,7 +292,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 
-	##### GUI handlers functions ################################################################
+##### GUI handlers functions ################################################################
 
 	setdir=function(File){
 		if (!is.na(File)){
@@ -303,29 +303,29 @@ SeqGrapheR=function(){    # main function
 
 
 	IdsEditorCleanUp=function(){
-# read content of ids editor window, valid separators are ,;space and tab
-# remove all unknown ids - not present in graph
-# format Ids in editor window, remove duplicates ids
+                                        # read content of ids editor window, valid separators are ,;space and tab
+                                        # remove all unknown ids - not present in graph
+                                        # format Ids in editor window, remove duplicates ids
 		if (exists("GL",envir=envGL)){
-			# check content of the gui Ids editor window:
+                                        # check content of the gui Ids editor window:
 			windContent=svalue(gui$IdsEditor)
-			#vectorize:
+                                        #vectorize:
 			windContent=unlist(strsplit(windContent,split="[ ,;\t\n]"))
-			#check names
+                                        #check names
 			svalue(gui$IdsEditor)=paste(unique(windContent[windContent %in% V(envGL$GL$G)$name]),collapse=", ")
 		}
 	}
 
 	getIdsFromEditor=function(){
-# read content of ids editor window, valid separators are ,;space and tab
-# remove all unknown ids - not present in graph
+                                        # read content of ids editor window, valid separators are ,;space and tab
+                                        # remove all unknown ids - not present in graph
 		if (exists("GL",envir=envGL)){
-			# check content of the gui Ids editor window:
+                                        # check content of the gui Ids editor window:
 			windContent=svalue(gui$IdsEditor)
-			#vectorize:
+                                        #vectorize:
 			windContent=unlist(strsplit(windContent,split="[ ,;\t]"))
 			windContent=unique(windContent[windContent %in% V(envGL$GL$G)$name])
-			#check names
+                                        #check names
 		}
 	}
 
@@ -350,59 +350,63 @@ SeqGrapheR=function(){    # main function
 
 
 
-# show graph in ggobi
-        # added to show pairs edges in graph:
-        get_pairs=function(GL){
+                                        # show graph in ggobi
+                                        # added to show pairs edges in graph:
+  get_pairs=function(GL){
                                         # check if last character label pair
-            label = substring(V(GL$G)$name,nchar(V(GL$G)$name))
-            if (length(unique(label))==2){
-                id=gsub(".{1}$","",V(GL$G)$name)
-                tbl = table(id, label)
-                tbl=tbl[tbl[,1]==1 & tbl[,1]==1,][]
-                v1 = paste(rownames(tbl),label[1],sep="")
-                v2 = paste(rownames(tbl),label[2],sep="")
-                return(cbind(v1,v2))
-            }else{
-                return(NULL)
-            }
+    label = substring(V(GL$G)$name,nchar(V(GL$G)$name))
+    if (length(unique(label))==2){
+      id=gsub(".{1}$","",V(GL$G)$name)
+      tbl = table(id, label)
+      tbl=tbl[tbl[,1]==1 & tbl[,1]==1,][]
+      v1 = paste(rownames(tbl),label[1],sep="")
+      v2 = paste(rownames(tbl),label[2],sep="")
+      return(cbind(v1,v2))
+    }else{
+      return(NULL)
+    }
 
-        }
-
-
-
-        showGraph=function(graphLayout,fgcolor=NULL){
-            gf=graphLayout$L
-            rownames(gf)=V(graphLayout$G)$name
-            ggobiObject=ggobi(gf)
+  }
 
 
-                                        #display edges:
-            if (gconfirm(message='Include edges in the graph?\n\n(can be computationaly / memory demanding)',icon='warning')){
-                weight=E(graphLayout$G)$weight
-                ggobiObject$whg=data.frame(weight)
-                e=get.edgelist(graphLayout$G);rownames=c('src','dest')
-                edges(ggobiObject$whg)=e
-            }
 
-                                        # pair edges, make it optional - it slows import:
-            ep = get_pairs(graphLayout)
-            if (!is.null(ep)){
-                if (gconfirm(message='Include edges for read pairs?)',icon='warning')){
-                    ggobiObject$pairs = data.frame(weight = rep(1,nrow(ep)))
-                    edges(ggobiObject$pairs) = ep
-                }
-            }
+  showGraph=function(graphLayout,fgcolor=NULL){
+    gf=graphLayout$L
+    rownames(gf)=V(graphLayout$G)$name
+    ggobiObject=ggobi(gf)
 
-            if (!is.null(fgcolor)){
-                glyph_colour(ggobiObject[1])=fgcolor
-            }
+
+    ## display edges:(based on the setting in the DataLoader)
+
+    ## if (gconfirm(message='Include edges in the graph?\n\n(can be computationaly / memory demanding)',icon='warning')){
+    if (svalue(gui$DataLoader_chck_edges)){
+      weight=E(graphLayout$G)$weight
+      ggobiObject$whg=data.frame(weight)
+      e=get.edgelist(graphLayout$G);rownames=c('src','dest')
+      edges(ggobiObject$whg)=e
+    }
+
+    ## pair edges, make it optional - it slows import:
+    ## TODO check if it really working
+    ep = get_pairs(graphLayout)
+    if (!is.null(ep)){
+      ## if (gconfirm(message='Include edges for read pairs?)',icon='warning')){
+      if (svalue(gui$DataLoader_chck_pairs)){
+        ggobiObject$pairs = data.frame(weight = rep(1,nrow(ep)))
+        edges(ggobiObject$pairs) = ep
+      }
+    }
+
+    if (!is.null(fgcolor)){
+      glyph_colour(ggobiObject[1])=fgcolor
+    }
                                         #gd=displays(ggobiObject)[[1]]
                                         #pmode(gd) = 'Rotation'
-            ggobiObject
+    ggobiObject
 	}
 
 	defHandlerAdd2Editor=function(h,...){
-		# get selected Ids
+                                        # get selected Ids
 		selectedIdsIndex=svalue(gui$mainData,index=FALSE)
 		if (length(selectedIdsIndex)>0){ #check is anything is selected
 			selectedIds=unique(unlist(envGL$IdsListIds[selectedIdsIndex]))
@@ -442,7 +446,7 @@ SeqGrapheR=function(){    # main function
 		lsFile=gfile("Select file",type='open')
 		if (!is.na(lsFile)){
 			setdir(lsFile)
-			#importedList=scan(file=lsFile,sep='\n',what=character())
+                                        #importedList=scan(file=lsFile,sep='\n',what=character())
 			importedList=readLines(lsFile)
 
 			N=length(importedList)
@@ -480,7 +484,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	defHandlerRemoveFromEditor=function(h,...){
-		# get selected Ids
+                                        # get selected Ids
 		selectedIdsIndex=svalue(gui$mainData,index=FALSE)
 		if (length(selectedIdsIndex)>0){ #check is anything is selected
 			selectedIds=unique(unlist(envGL$IdsListIds[selectedIdsIndex]))
@@ -502,13 +506,13 @@ SeqGrapheR=function(){    # main function
 
 
 	defHandlerYellow2editor=function(h,...){
-		#get selected:
+                                        #get selected:
 		if (DataLoaded()) {
 			selectedIds=V(envGL$GL$G)$name[glyph_colour(envGL$g[1])==9]
-			#click
-			# svalue(gui$move2editorArrow)=paste(iconDir,"/yellowArrow2.png",sep="")
-			# Sys.sleep(0.1)
-			# svalue(gui$move2editorArrow)=paste(iconDir,"/yellowArrow.png",sep='')
+                                        #click
+                                        # svalue(gui$move2editorArrow)=paste(iconDir,"/yellowArrow2.png",sep="")
+                                        # Sys.sleep(0.1)
+                                        # svalue(gui$move2editorArrow)=paste(iconDir,"/yellowArrow.png",sep='')
 			addIdsToEditor(selectedIds)
 		}
 	}
@@ -549,7 +553,7 @@ SeqGrapheR=function(){    # main function
 		if (Number_of_reads>0){
 			Group=ginput(message="Enter Group name",icon="question")
 			Subset=ginput(message="Enter Subset name",icon="question")
-			# put list into gtable
+                                        # put list into gtable
 			listsDf=data.frame(Group=Group,Subset=Subset,Number_of_reads=Number_of_reads,stringsAsFactors=FALSE)
 			addList(listsDf,list(ids))
 		}
@@ -567,7 +571,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	defHandlerShowNeighbors=function(h,...){
-		#get selected:
+                                        #get selected:
 		if (DataLoaded()) {
 			selids=which(glyph_colour(envGL$g[1])==9)
 			selids=unique(unlist(neighborhood(envGL$GL$G,1,selids)))
@@ -576,15 +580,33 @@ SeqGrapheR=function(){    # main function
 
 		}
 	}
-	# open GL file and crerate ggobi object,
+                                        # open GL file and crerate ggobi object,
 	defHandlerOpenGL=function(h,...){
-		glfile=gfile(text='select graph file', type = "open", filter = list("GL graph" = list(patterns = c("*.GL")), "All files" = list(patterns = c("*"))), handler = function(h,...) return(h$file))
+    if (is.null(h$action)){
+      ## started from menu
+      glfile=gfile(text='select graph file', type = "open",
+                   filter = list("GL graph" = list(patterns = c("*.GL")), "All files" = list(patterns = c("*"))),
+                   handler = function(h,...) return(h$file))
+      ## set it back to data loader:
+      svalue(gui$DataLoader_GL) = gfile
+    }else{
+      if(h$action=="data_load"){
+        glfile = svalue(gui$DataLoader_GL)
+        if (!file.exists(glfile)){
+          return(FALSE)
+        }
+      }
+    }
 		if (!is.na(glfile)){    # if not canceled)
 			setdir(glfile)
 			GL=NULL
 			try(load(glfile),silent=TRUE)
+      ## label data as unloaded
+      svalue(gui$DataLoader_GL_loaded)="no"
+      svalue(gui$DataLoader_ACE_loaded)="no"
+      svalue(gui$DataLoader_reads_loaded)="no"
 			if (!is.null('GL')) { #in loaded object
-				# check if g exist in envGL and close and remove everything
+        ## check if g exist in envGL and close and remove everything
 				if (exists('g',envir=envGL)){
 					while(ggobi_count()>0) close(ggobi_get())  # will close all ggobi instances
 					rm_gW('degreeWindow',envir=gui)   # will remove degrreWindow if open
@@ -593,7 +615,7 @@ SeqGrapheR=function(){    # main function
 				envGL$GL=GL
 				envGL$g=showGraph(envGL$GL)
 				createEmptyIdsLists()
-				#initial first row:
+                                        #initial first row:
 				envGL$IdsListDataFrame[1,1:2]=c("ALL","ALL")
 				envGL$IdsListDataFrame[1,3]=as.integer(vcount(envGL$GL$G))
 				envGL$IdsListDataFrame[1,4]=as.integer(1)
@@ -602,9 +624,9 @@ SeqGrapheR=function(){    # main function
 				envGL$IdsListFreq[[1]]=NA
 				updateIdsListDataWindow()
 
-				if (length(names(envGL$g))==2){# do not show histograpm when no edges are not imported to ggobi
+				if (length(names(envGL$g))==2){# do not show histogram when no edges are not imported to ggobi
 					degreeHistogram()
-					#add degree info to ggobi
+                                        #add degree info to ggobi
 					envGL$g$gf$degree=degree(envGL$GL$G)
 				}else{
 					glyph_type(envGL$g[1])=1
@@ -614,12 +636,16 @@ SeqGrapheR=function(){    # main function
 					}
 
 				}
-
+        svalue(gui$StatusBar)=paste("Graph loaded from file:\n",
+                                    glfile,"Graph size:\nV=",vcount(envGL$GL$G),
+                                    "\nE=",ecount(envGL$GL$G),"\n",sep='')
+        svalue(gui$DataLoader_GL_loaded)="ok"
+        return(TRUE)
 			}else{#wrong file
 				gmessage("Wrong file format", title="message",icon ="error")
+        return(FALSE)
 			}
 		}
-		svalue(gui$StatusBar)=paste(glfile," :  V=",vcount(envGL$GL$G)," E=",ecount(envGL$GL$G),sep='')
 	}
 
 	## open ncol file, calculate layout, and create ggobi object
@@ -640,7 +666,7 @@ SeqGrapheR=function(){    # main function
 			envGL$GL=GL
 			envGL$g=showGraph(envGL$GL)
 			createEmptyIdsLists()
-			#initial first row:
+                                        #initial first row:
 			envGL$IdsListDataFrame[1,1:2]=c("ALL","ALL")
 			envGL$IdsListDataFrame[1,3]=as.integer(vcount(envGL$GL$G))
 			envGL$IdsListDataFrame[1,4]=as.integer(1)
@@ -649,14 +675,14 @@ SeqGrapheR=function(){    # main function
 			envGL$IdsListFreq[[1]]=NA
 			updateIdsListDataWindow()
 			degreeHistogram()
-			#add degree info to ggobi
+                                        #add degree info to ggobi
 			envGL$g$gf$degree=degree(envGL$GL$G)
 			dispose(gal)
 		}
 	}
 
 
-# open sequences, run megablast, create graph, calculate layout, show graph.
+                                        # open sequences, run megablast, create graph, calculate layout, show graph.
 	defHandlerOpenSequences2Graph=function(h,...){
 		fastaFile=gfile(text='select fasta file for graph construction', type = "open", filter = list("fasta" = list(patterns = c("*.fas",'*.fna',"fasta")), "All files" = list(patterns = c("*"))), handler = function(h,...)return(h$file))
 		if (!is.na(fastaFile)){    # if the action was not canceled
@@ -669,22 +695,22 @@ SeqGrapheR=function(){    # main function
 			megablastTable=megablast(seqs,seqs,params='tgicl')
 			GL$G=blast2graph(megablastTable)  # make graph
 			GL$L=layout.fruchterman.reingold(GL$G,dim=3,verbose=TRUE)
-			# show
+                                        # show
 			removeAll()
 
-			# make sequence index
+                                        # make sequence index
 			seqIndex=1:length(seqs)
 			names(seqIndex)=names(seqs)
 			GL$Seq=seqs[seqIndex[V(GL$G)$name]]    # biostring object as part of GL
 			V(GL$G)$length=unname(nchar(GL$Seq))   # length as vertex attribute
 
-			# put everything into envGL eviroment
+                                        # put everything into envGL eviroment
 			envGL$seqIndex
 			envGL$magablastTable=megablastTable
 			envGL$GL=GL
 			envGL$g=showGraph(envGL$GL)
 			createEmptyIdsLists()
-			#initial first row:
+                                        #initial first row:
 			envGL$IdsListDataFrame[1,1:2]=c("ALL","ALL")
 			envGL$IdsListDataFrame[1,3]=as.integer(vcount(envGL$GL$G))
 			envGL$IdsListDataFrame[1,4]=as.integer(1)
@@ -693,49 +719,74 @@ SeqGrapheR=function(){    # main function
 			envGL$IdsListFreq[[1]]=NA
 			updateIdsListDataWindow()
 			degreeHistogram()
-			#add degree info to ggobi
+                                        #add degree info to ggobi
 			envGL$g$gf$degree=degree(envGL$GL$G)
-			#add Length info to ggobi
+                                        #add Length info to ggobi
 			envGL$g$gf$length=V(envGL$GL$G)$length
 		}
 	}
 
 	defHandlerImportSequences=function(h,...){
-		#assume that graph is already loades from GL or ncol formatdb
+    ## it assumes that graph is already loades from GL or ncol formatdb
 		if (DataLoaded()){
-			fastaFile=gfile(text='select fasta file', type = "open", filter = list("fasta" = list(patterns = c("*.fas",'*.fna',"fasta")), "All files" = list(patterns = c("*"))), handler = function(h,...)return(h$file))
+      if (is.null(h$action)){
+        fastaFile=gfile(text='select fasta file', type = "open",
+                        filter = list(
+                          "fasta" = list(patterns = c("*.fas",'*.fna',"fasta")),
+                          "All files" = list(patterns = c("*"))),
+                        handler = function(h,...)return(h$file))
+        svalue(gui$DataLoader_reads) = fastaFile
+      }else{
+        if(h$action=="data_load"){
+          fastaFile = svalue(gui$DataLoader_reads)
+          if (!file.exists(fastaFile)){
+            ## not a file
+            return(FALSE)
+          }
+        }
+      }
 			if (!is.na(fastaFile)){    # if the action was not canceled
 				setdir(fastaFile)
 				seqs=read.DNAStringSet(fastaFile)
 				names(seqs)=gsub(" .+","",names(seqs))  # short names only
-				# check if contain same names as graph GL$G
+        ## check if contain same names as graph GL$G
 				if (sum(!(V(envGL$GL$G)$name %in% names(seqs)))==0){
 					envGL$seqIndex=1:length(seqs)
 					names(envGL$seqIndex)=names(seqs)
 					envGL$GL$Seq=seqs[envGL$seqIndex[V(envGL$GL$G)$name]]    # biostring object as part of GL
 					V(envGL$GL$G)$length=unname(nchar(envGL$GL$Seq))   # length as vertex attribute
-					#add Length info to ggobi
+          ##add Length info to ggobi
 					envGL$g$gf$length=V(envGL$GL$G)$length
 				}else{
 					gmessage("wrong sequence file",icon='error')
 				}
 			}
+    svalue(gui$DataLoader_reads_loaded)="ok"
+    insert(gui$StatusBar, paste(length(envGL$GL$Seq)," reads loaded\n"))
+    return(TRUE)
 		}else{
 			gmessage("No graph is loaded",icon='error')
 		}
 	}
 
 
-
-
-
-
-
-
-
-
 	defHandlerImportContigs=function(h,...){
-		aceFile=gfile(text='select ACE file', type = "open", filter = list("ACE file" = list(patterns = c("*.ace",'*.ACE')), "All files" = list(patterns = c("*"))), handler = function(h,...) return(h$file))
+    if (is.null(h$action)){
+      ## started from menu
+      aceFile=gfile(text='select ACE file', type = "open",
+                    filter = list("ACE file" = list(patterns = c("*.ace",'*.ACE')), "All files" = list(patterns = c("*"))),
+                    handler = function(h,...) return(h$file))
+      ## set it back to data loader:
+      svalue(gui$DataLoader_ACE) = aceFile
+    }else{
+      if(h$action=="data_load"){
+        aceFile = svalue(gui$DataLoader_ACE)
+        if (!file.exists(aceFile)){
+          ## not a file
+          return(FALSE)
+        }
+      }
+    }
 		if (!is.na(aceFile)) {
 			setdir(aceFile)
 			## tigReads=getACEcontigs(aceFile)
@@ -747,12 +798,11 @@ SeqGrapheR=function(){    # main function
         ## no need to ask - it never change
         Group="Contigs"
 				if (!is.na(Group)){
-					# TO DO -check duplicates ##
+                                        # TO DO -check duplicates ##
 					Subset=names(contigReads)
 					Number_of_reads=as.integer(sapply(contigReads,length))
 					newListDf=data.frame(Group=Group,Subset=Subset,Number_of_reads=Number_of_reads,stringsAsFactors=FALSE)
 					addList(newListDf,contigReads)
-          
 					contigNames=rep(names(contigReads),sapply(contigReads,length))
 					names(contigNames)=unlist(contigReads)
 					ids_contig=paste(V(envGL$GL$G)$name,contigNames[V(envGL$GL$G)$name],sep="_")   #new name for nodes ids_contig
@@ -760,6 +810,9 @@ SeqGrapheR=function(){    # main function
 				}
 			}
 		}
+    svalue(gui$DataLoader_ACE_loaded)="ok"
+    insert(gui$StatusBar, paste(length(envGL$contigs)," contigs loaded\n"))
+    return(TRUE)
 	}
 
 	defHanderIdslist_single=function(h,...){
@@ -777,7 +830,7 @@ SeqGrapheR=function(){    # main function
 
 
 	## gtable with Ids list manipulation:
-	####################################################################################
+####################################################################################
 	createEmptyIdsLists=function(){
 		envGL$IdsListDataFrame=data.frame(Group=character(),Subset=character(),
                                       Number_of_reads=integer(),ID=integer(),
@@ -792,22 +845,22 @@ SeqGrapheR=function(){    # main function
 	}
 
 	updateIdsListDataWindow=function(){
-		#show actual data in data window
+                                        #show actual data in data window
 		gui$mainData[]=envGL$IdsListDataFrame[envGL$IdsListVisible,]
 	}
 
 
 	addList=function(listsDf,IdsList){  # add new list to IdsListDataFrame and also to IdsListIds and create ID
-		# lists validation - include only list with valid IDS
+                                        # lists validation - include only list with valid IDS
 		validList=sapply(IdsList,FUN=function(x)any(x %in% V(envGL$GL$G)$name))
 		if (any(validList)){
 			listsDf=listsDf[validList,]
 			IdsList=IdsList[validList]
-      #check for empty lists
+                                        #check for empty lists
       notEmpty=listsDf$Number_of_reads>0
       listsDf=listsDf[notEmpty,]
 			IdsList=IdsList[notEmpty]
-			# check if list contain Ids frequence
+                                        # check if list contain Ids frequence
 			IdsListFreq=list()
 			for (i in seq_along(IdsList)){
 
@@ -906,12 +959,12 @@ SeqGrapheR=function(){    # main function
 			if (h$action[[2]]=='shape'){
 				glyph_type(envGL$g[1])[V(envGL$GL$G)$name %in% selectedIds]=h$action[[1]]
 			}
-			#if (length(selectedIdsIndex)==1){   # this take a long time
-			#	# add Ids group_subset label
-			#	groupName=paste(envGL$IdsListDataFrame[selectedIdsIndex,1:2],sep="_",collapse='_')
-			#	ids_groupName=paste(V(envGL$GL$G)$name[V(envGL$GL$G)$name %in% selectedIds],groupName,sep="_")
-			#	rownames(envGL$g[1])[V(envGL$GL$G)$name %in% selectedIds]=ids_groupName
-			#}
+                                        #if (length(selectedIdsIndex)==1){   # this take a long time
+                                        #	# add Ids group_subset label
+                                        #	groupName=paste(envGL$IdsListDataFrame[selectedIdsIndex,1:2],sep="_",collapse='_')
+                                        #	ids_groupName=paste(V(envGL$GL$G)$name[V(envGL$GL$G)$name %in% selectedIds],groupName,sep="_")
+                                        #	rownames(envGL$g[1])[V(envGL$GL$G)$name %in% selectedIds]=ids_groupName
+                                        #}
 
 		}
 	}
@@ -924,8 +977,8 @@ SeqGrapheR=function(){    # main function
 
 
 	ShowGGobi=function(){
-		#check if ggobbi window is open
-		#if not show it
+                                        #check if ggobbi window is open
+                                        #if not show it
 
 	}
 
@@ -933,14 +986,14 @@ SeqGrapheR=function(){    # main function
 
 	## Graphics window:
 	defHandlerShowDegreeHistogram=function(h,...){
-		#check if graph is loaded:
+                                        #check if graph is loaded:
 		if (DataLoaded()){
 			degreeHistogram()
 		}
 	}
 
 	defHandlerShowLengthHistogram=function(h,...){
-		#check if graph is loaded:
+                                        #check if graph is loaded:
 		if (DataLoaded()){
 			lengthHistogram()
 		}
@@ -986,7 +1039,7 @@ SeqGrapheR=function(){    # main function
   }
 
 	defHandlerDotter=function(h,...){
-		#check if graph is loaded:
+                                        #check if graph is loaded:
 		if (DataLoaded()){
 			showDotter()
 		}
@@ -1020,7 +1073,7 @@ SeqGrapheR=function(){    # main function
         s1 = svalue(gui$mainData,index=FALSE)
         s2 = svalue(gui$ListInfo,index=FALSE)
         selectedContigsName = envGL$IdsListDataFrame[unique(c(s1,s2)),"Subset"]
-        # TODO add contigs from list info too
+                                        # TODO add contigs from list info too
         contigs = envGL$contigs[names(envGL$contigs) %in% selectedContigsName]
 
         if (length(contigs) == 0){
@@ -1042,21 +1095,21 @@ SeqGrapheR=function(){    # main function
 		if (length(grep(paste("[.]",suffix,"$",sep=''),filename))==0){
 			filename=paste(filename,".",suffix,sep='')
 		}else{
-			#filename is correct
+                                        #filename is correct
 		}
 		filename
 	}
 
 	defHandlerShowDegreeLengthScatter=function(h,...){
-		#check if graph is loaded:
+                                        #check if graph is loaded:
 		if (DataLoaded()){
 			degreeLengthScatter()
 		}
 	}
 
 	degreeHistogram=function(){
-		#rm_gW('degreeWindow',envir=gui)
-		#everything is kept inside function only pointer is put to gui enviroment
+                                        #rm_gW('degreeWindow',envir=gui)
+                                        #everything is kept inside function only pointer is put to gui enviroment
 		updateGraph=function(h,...){
 			plot(histogram,xlab="read degree",main="select threshold")
 			abline(v=svalue(h$obj),col='red',lwd=2)
@@ -1069,7 +1122,7 @@ SeqGrapheR=function(){    # main function
 		}
 		graph.degree=degree(envGL$GL$G)
 		gui$currentGraph=ggroup(container=gui$graphicsWindow,horizontal=FALSE,expand=TRUE)
-		degreeHist=ggraphics(container=gui$currentGraph,dpi=10,ps=8)
+		degreeHist=ggraphics(container=gui$currentGraph,dpi=6,ps=8)
 		brks=seq(0,max(graph.degree)+1,length.out=100)
 		histogram=hist(graph.degree,plot=FALSE,breaks=brks)
 		graph.summary=paste("\nTotal number of vertices : ",vcount(envGL$GL$G),"\nTotal number of edges :",ecount(envGL$GL$G))
@@ -1082,7 +1135,7 @@ SeqGrapheR=function(){    # main function
 
 
 	defHandlerPlotBlastResults=function(h,...){
-		#check if blast resultsexists
+                                        #check if blast resultsexists
 		if (exists('lastBlast',envir=envGL)){
 			blastHistogram(envGL$lastBlast)
 		}else{
@@ -1091,7 +1144,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	defHandlerPlotFreqHistogram=function(h,...){
-# check what list is selected - one only
+                                        # check what list is selected - one only
 		selectedIdsIndex=svalue(gui$mainData,index=FALSE)
 		if (length(selectedIdsIndex)==1){ #check one list is selected
 			freqTable=envGL$IdsListFreq[[selectedIdsIndex]]
@@ -1125,7 +1178,7 @@ SeqGrapheR=function(){    # main function
 		}
 		graph.freq=IdsFreqTable
 		gui$currentGraph=ggroup(container=gui$graphicsWindow,horizontal=FALSE,expand=TRUE)
-		freqHist=ggraphics(container=gui$currentGraph,dpi=10,ps=8)
+		freqHist=ggraphics(container=gui$currentGraph,dpi=6,ps=8)
 		histogram=hist(graph.freq,plot=FALSE,breaks=50)
 		graph.summary=paste("\nTotal number of vertices : ",vcount(envGL$GL$G),"\nTotal number of edges :",ecount(envGL$GL$G))
 		steps=(max(graph.freq)-min(graph.freq))/100
@@ -1151,12 +1204,12 @@ SeqGrapheR=function(){    # main function
 			glyph_colour(envGL$g[1])=(nodesBitScore>=svalue(h$obj))*8+1
 		}
 		showBlastTable=function(h,...){
-			#show hits for selected nodes
+                                        #show hits for selected nodes
 			selNodeNames=V(envGL$GL$G)$name[glyph_colour(envGL$g[1])==9]
 			Blast2Show=blastTable[blastTable$Query %in% selNodeNames,]
 			Blast2Show=Blast2Show[order(Blast2Show$bitScore,decreasing=TRUE),]
 			Blast2Show=Blast2Show[!duplicated(Blast2Show$Query),]
-			# show results in separate window
+                                        # show results in separate window
 			if (exists("blastTableWindow",envir=gui)) {
 				try(dispose(gui$blastTableWindow))
 			}
@@ -1185,29 +1238,29 @@ SeqGrapheR=function(){    # main function
 			delete(gui$graphicsWindow,gui$currentGraph)
 			rm('currentGraph',envir=gui)
 		}
-		#remove dublicated hits keep higher score
+                                        #remove dublicated hits keep higher score
 		blastTable=blastTable[order(blastTable$bitScore,decreasing=TRUE),]
 		blastTable=blastTable[!duplicated(blastTable$Query),]
 
 		bitScore=blastTable$bitScore
 		names(bitScore)=blastTable$Query
-		#add names for no hits
+                                        #add names for no hits
 		noHitNames=V(envGL$GL$G)$name[!(V(envGL$GL$G)$name %in% names(bitScore))]
 		zeroBitScore=rep(0,length(noHitNames))
 		names(zeroBitScore)=noHitNames
 		bitScore=append(zeroBitScore,bitScore)
 
-		#Score in correct order
+                                        #Score in correct order
 		nodesBitScore=bitScore[V(envGL$GL$G)$name]
 
-		#creat graph
+                                        #creat graph
 		gui$currentGraph=ggroup(container=gui$graphicsWindow,horizontal=FALSE,expand=TRUE)
-		blastHist=ggraphics(container=gui$currentGraph,dpi=8,ps=6)
+		blastHist=ggraphics(container=gui$currentGraph,dpi=6,ps=6)
 		histogram=hist(nodesBitScore,plot=FALSE,breaks=50)
 		graph.summary=paste("\nTotal number of vertices : ",vcount(envGL$GL$G),"\nTotal number of edges :",ecount(envGL$GL$G))
 		gSl=gslider(from=min(nodesBitScore),to=max(nodesBitScore),handler=updateGraph,container=gui$currentGraph)
 		lowerPanel=ggroup(container=gui$currentGraph,horizontal=TRUE)
-		#infoText=glabel(text=graph.summary,container=lowerPanel)
+                                        #infoText=glabel(text=graph.summary,container=lowerPanel)
 		showInfoButton=gbutton("Show hits for selected\n nodes in table",container=lowerPanel,handler=showBlastTable)
 		showInfoButton2=gbutton("Create Ids sublists \nfrom selected nodes",container=lowerPanel,handler=createSublist)
 		Sys.sleep(1) # time to resize window
@@ -1229,7 +1282,7 @@ SeqGrapheR=function(){    # main function
 			graph.degree=degree(envGL$GL$G)
 			readLength=V(envGL$GL$G)$length
 			gui$currentGraph=ggroup(container=gui$graphicsWindow,horizontal=FALSE,expand=TRUE)
-			degreeHist=ggraphics(container=gui$currentGraph,dpi=10,ps=8)
+			degreeHist=ggraphics(container=gui$currentGraph,dpi=6,ps=8)
 			Sys.sleep(1) # time to resize window
 			plot(graph.degree,readLength,xlab="degree",ylab="length [bp]",col="#00000030",pch=18)
 		}else{
@@ -1245,14 +1298,14 @@ SeqGrapheR=function(){    # main function
 				abline(v=svalue(h$obj),col='red',lwd=2)
 				glyph_colour(envGL$g[1])=(readLength>svalue(h$obj))*8+1
 			}
-			#remove current graph
+                                        #remove current graph
 			if (exists("currentGraph",envir=gui)){ #remove it
-				delete(gui$graphicsWindow,gui$currentGraph)
 				rm('currentGraph',envir=gui)
 			}
+				delete(gui$graphicsWindow,gui$currentGraph)
 			readLength=V(envGL$GL$G)$length
 			gui$currentGraph=ggroup(container=gui$graphicsWindow,horizontal=FALSE,expand=TRUE)
-			lengthHist=ggraphics(container=gui$currentGraph,dpi=10,ps=8)
+			lengthHist=ggraphics(container=gui$currentGraph,dpi=6,ps=8)
 			histogram=hist(readLength,plot=FALSE,breaks=50)
 			graph.summary=paste("\nTotal number of vertices : ",vcount(envGL$GL$G),"\nTotal number of edges :",ecount(envGL$GL$G))
 			gSl=gslider(from=min(readLength),to=max(readLength),handler=updateGraph,container=gui$currentGraph)
@@ -1267,7 +1320,7 @@ SeqGrapheR=function(){    # main function
 
 
 	defHandlerBlastx=function(h,...){
-		#check if graph seqs are loaded
+                                        #check if graph seqs are loaded
 		if(!is.null(envGL$GL$Seq)){
 			oridir=getwd()
 			if (!is.null(envGL$gui$wdirs$blastx)){
@@ -1279,8 +1332,8 @@ SeqGrapheR=function(){    # main function
 				protseq=read.BStringSet(protfile,format='fasta')
 				cat("running blastx\n")
 				blastxresults=blastall(protseq,envGL$GL$Seq,programname='blastx',m=8,params="",protein=TRUE)
-				# params=' -m 8 -p blastx -a 7 -b 1 -v 1 -K 1'
-				# put bitScore results into histogram
+                                        # params=' -m 8 -p blastx -a 7 -b 1 -v 1 -K 1'
+                                        # put bitScore results into histogram
 				blastHistogram(blastxresults)
 				envGL$lastBlast=blastxresults
 			}
@@ -1291,7 +1344,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	defHandlerBlastn=function(h,...){
-		#check if graph seqs are loaded
+                                        #check if graph seqs are loaded
 		if(!is.null(envGL$GL$Seq)){
 			oridir=getwd()
 			if (!is.null(envGL$gui$wdirs$blastn)){
@@ -1303,8 +1356,8 @@ SeqGrapheR=function(){    # main function
 				DNAseq=read.DNAStringSet(DNAfile,format='fasta')
 				cat("running blastn\n")
 				blastnresults=blastall(DNAseq,envGL$GL$Seq,programname='blastn',m=8,params="",protein=FALSE)
-				# params=' -m 8 -p blastx -a 7 -b 1 -v 1 -K 1'
-				# put bitScore results into histogram
+                                        # params=' -m 8 -p blastx -a 7 -b 1 -v 1 -K 1'
+                                        # put bitScore results into histogram
 				blastHistogram(blastnresults)
 				envGL$lastBlast=blastnresults
 			}
@@ -1315,11 +1368,21 @@ SeqGrapheR=function(){    # main function
 	}
 
 	defHandlerImportBlastTable=function(h,...){
-		blastFile=gfile('Select file with blast results in tabular format',type='open')
+    if (is.null(h$action)){
+      blastFile=gfile('Select file with blast results in tabular format',type='open')
+    }else{
+       if(h$action=="data_load"){
+          blastFile = svalue(gui$DataLoader_domains)
+          if (!file.exists(blastFile)){
+            ## not a file
+            return(FALSE)
+          }
+        }
+    }
 		if (!is.null(blastFile)){   # if not canceled
 			setdir(blastFile)
 			blast=read.table(blastFile,sep="\t", as.is=TRUE, comment.char="", header=TRUE)
-			#check blast validity:
+      ## check blast validity:
 			cond1=dim(blast)[2]==5   # corect dimension
 			cond2=blast[,1] %in% V(envGL$GL$G)$name  # to check ids
 			if (cond1 & sum(cond2)>0){
@@ -1327,7 +1390,12 @@ SeqGrapheR=function(){    # main function
 				colnames(blast)=c('Query', 'Subject', 'alignmentLength', 'bitScore','percIdentity')
 				blastHistogram(blast)
 				envGL$lastBlast=blast
-			}
+        svalue(gui$DataLoader_domains_loaded)="ok"
+        insert(gui$StatusBar, paste("blast table with ", nrow(blast),"rows loaded\n"))
+        return(TRUE)
+			}else{
+        return(FALSE)
+      }
 		}
 	}
 
@@ -1345,7 +1413,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 	subGL=function(GL,ids){
-		#make subgraph from GL based on Ids list
+                                        #make subgraph from GL based on Ids list
 		allIds=V(GL$G)$name
 		include=which(allIds %in% ids)
 		subGL=list()
@@ -1402,7 +1470,7 @@ SeqGrapheR=function(){    # main function
 
 	ggobi_current_layout=function(g,L){
 		gd=displays(g)[[1]]
-		#check if the mode is correct:
+                                        #check if the mode is correct:
 		if (pmode(gd) %in% c('Rotation','2D Tour','2x1D Tour')){
 			pr=ggobi_display_get_tour_projection(gd)
 			if (dim(pr)[1]>3){
@@ -1453,7 +1521,7 @@ SeqGrapheR=function(){    # main function
 
 
 
-	# to remove gWidget and its corresponding var stored in envir
+                                        # to remove gWidget and its corresponding var stored in envir
 	rm_gW=function(objname,envir){
 		obj=try(get(objname,envir=envir,inherits=FALSE),silent=TRUE)
 		try(dispose(obj),silent=TRUE)
@@ -1463,7 +1531,7 @@ SeqGrapheR=function(){    # main function
 	}
 
 
-# to remove ggobi windows and other individual windows and clean up envGL enviroment with data
+                                        # to remove ggobi windows and other individual windows and clean up envGL enviroment with data
 	removeAll=function(){
 		if (exists("blastTableWindow",envir=gui)) {
 			try(dispose(gui$blastTableWindow))
@@ -1484,7 +1552,7 @@ SeqGrapheR=function(){    # main function
 					while(ggobi_count()>0) close(ggobi_get())  # will close all ggobi instances
 				}
 				envGL$g=showGraph(envGL$GL)
-				#add degree info to ggobi
+                                        #add degree info to ggobi
 				envGL$g$gf$degree=degree(envGL$GL$G)
 				if (!is.null(V(envGL$GL$G)$length)){
 					envGL$g$gf$length=V(envGL$GL$G)$length
@@ -1511,17 +1579,17 @@ SeqGrapheR=function(){    # main function
 		prFile=gfile("Select project file",type='open')
 		if (!is.na(prFile)){
 			setdir(prFile)
-			#clean project enviroment
+                                        #clean project enviroment
 			removeAll()
 			load(envir=envGL,file=prFile)
-			#check validity of file
+                                        #check validity of file
 			if (exists("GL",envir=envGL)){
 				if (class(envGL$GL$G)=='igraph' & is.matrix(envGL$GL$L) & is.list(envGL$IdsListIds) & is.data.frame(envGL$IdsListDataFrame) & !is.null(envGL$IdsListVisible)){
-					#update widgets:
+                                        #update widgets:
 					envGL$g=showGraph(envGL$GL)
 					if (length(names(envGL$g))==2){# do not show histograpm when no edges are not imported to ggobi
 						degreeHistogram()
-						#add degree info to ggobi
+                                        #add degree info to ggobi
 						envGL$g$gf$degree=degree(envGL$GL$G)
 					}else{
 						plot.new()
@@ -1543,7 +1611,7 @@ SeqGrapheR=function(){    # main function
 
 
 	newIdsList=function(h,...){
-		#click
+                                        #click
 
 	}
 
@@ -1555,12 +1623,114 @@ SeqGrapheR=function(){    # main function
 	defHandlerQuit=function(h,...){
 		removeAll()
 		try(dispose(gui$winMain),silent=TRUE)
-		#rm(list=c('gui','envGL'))
+                                        #rm(list=c('gui','envGL'))
 	}
 
-	#########################################################################
-	################################ GUI MAIN  ##############################
-	#########################################################################
+
+  ## hanlers for data loader:
+  defHandlerGLfileChecker=function(h,...){
+    if (system(paste("file -b ", svalue(gui$DataLoader_GL)), intern = TRUE, ignore.stderr = TRUE)=="gzip compressed data, from Unix"){
+      svalue(gui$DataLoader_GL_status)="ok"
+    }else{
+      svalue(gui$DataLoader_GL_status)="no"
+    }
+  }
+
+  defHandlerACEfileChecker=function(h,...){
+    if (system(paste("file -b ", svalue(gui$DataLoader_ACE)), intern = TRUE, ignore.stderr = TRUE)=="ASCII text"){
+      svalue(gui$DataLoader_ACE_status)="ok"
+      svalue(gui$DataLoader_chck_ACE)=TRUE
+    }else{
+      svalue(gui$DataLoader_ACE_status)="no"
+
+    }
+  }
+
+  defHandlerReadsfileChecker=function(h,...){
+    if (system(paste("file -b ", svalue(gui$DataLoader_reads)), intern = TRUE, , ignore.stderr = TRUE)=="ASCII text"){
+      svalue(gui$DataLoader_reads_status) = "ok"
+      svalue(gui$DataLoader_chck_reads) = TRUE
+    }else{
+      svalue(gui$DataLoader_reads_status)="no"
+    }
+  }
+
+
+  defHandlerDomainfileChecker=function(h,...){
+    cond1 = system(paste("file -b ", svalue(gui$DataLoader_reads)), intern = TRUE, , ignore.stderr = TRUE)=="ASCII text"
+    ## check header!
+    cond2 = readLines(svalue(gui$DataLoader_domains),n = 1) == "name	db_id	length	bitscore	pid"
+    if (cond1 & cond2){
+      svalue(gui$DataLoader_domains_status) = "ok"
+      svalue(gui$DataLoader_chck_domains) = TRUE
+    }else{
+      svalue(gui$DataLoader_domains_status)="no"
+    }
+  }
+
+  defHandlerClusterDirChecker=function(h,...){
+    if (dir.exists(svalue(gui$DataLoader_cluster_DIR))){
+      setwd(svalue(gui$DataLoader_cluster_DIR))
+      GLfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "CL.+[.]GL", full.names = TRUE)
+      if (length(GLfile)>0){
+        svalue(gui$DataLoader_GL) = GLfile[1]
+      }
+      ACEfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = ".*CL.+[.]ace", full.names = TRUE)
+      if (length(ACEfile)>0){
+        svalue(gui$DataLoader_ACE) = ACEfile[1]
+      }
+      ReadsFile = dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "^reads[.]fas$", full.names = TRUE)
+      if (length(ReadsFile) == 1){
+        svalue(gui$DataLoader_reads) = ReadsFile
+      }
+      DomainsFile = dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "protein_database_annotation[.]csv", full.names = TRUE)
+      if (length(ReadsFile) == 1){
+        svalue(gui$DataLoader_domains) = DomainsFile
+      }
+
+    }
+  }
+
+
+  defHandlerClearInput = function(h,...){
+    svalue(gui$DataLoader_reads) = "select fasta file.."
+    svalue(gui$DataLoader_ACE) = "select ACE file.."
+    svalue(gui$DataLoader_GL) = "select GL file.."
+    svalue(gui$DataLoader_domains) = "select domain csv file.."
+    svalue(gui$DataLoader_cluster_DIR) = "select cluster directory.."
+    svalue(gui$DataLoader_chck_reads) = FALSE
+    svalue(gui$DataLoader_chck_ACE) = FALSE
+    svalue(gui$DataLoader_chck_domains) = FALSE
+    ## TODO clear all data and close ggobi
+  }
+
+  defHandlerLoadData = function(h,...){
+    status = defHandlerOpenGL(h, ...)
+    update(gui$DataLoader_GL_loaded)
+    Sys.sleep(0.1)
+    if (status){
+      if(svalue(gui$DataLoader_chck_ACE)){
+        Sys.sleep(0.1)
+        status2 = defHandlerImportContigs(h,...)
+        update(gui$DataLoader_ACE_loaded)
+      }
+      if(svalue(gui$DataLoader_chck_reads)){
+        Sys.sleep(0.1)
+        status3 = defHandlerImportSequences(h,...)
+        update(gui$DataLoader_reads_loaded)
+      }
+      if(svalue(gui$DataLoader_chck_domains)){
+        Sys.sleep(0.1)
+        status3 = defHandlerImportBlastTable(h,...)
+      }
+    }
+  }
+
+
+
+#########################################################################
+################################ GUI MAIN  ##############################
+#########################################################################
 
 
 	iconDir=paste(system.file('images',package='SeqGrapheR'),'/',sep='')   # for package
@@ -1592,10 +1762,10 @@ SeqGrapheR=function(){    # main function
 
   addStockIcons(gsub(".svg$","", basename(icon_files)), icon_files)
 
-# for testing as source:
-	#iconDir="/home/petr/Dropbox/Rscripts/icons"  # home
-	#iconDir="/mnt/raid/petr/icons"	#work						# work
-	#iconDir="/mnt/raid/spolecny/petr/icons"
+                                        # for testing as source:
+                                        #iconDir="/home/petr/Dropbox/Rscripts/icons"  # home
+                                        #iconDir="/mnt/raid/petr/icons"	#work						# work
+                                        #iconDir="/mnt/raid/spolecny/petr/icons"
   
 
 
@@ -1615,7 +1785,7 @@ SeqGrapheR=function(){    # main function
 
 	## menu list:
 	mbl = list()
-	# open menu - import graph from various format
+                                        # open menu - import graph from various format
 	mbl$File$"Open graph"$"GL format"$handler=defHandlerOpenGL   #done
 	mbl$File$"Open graph"$"ncol format"$handler=defHandlerOpenNcol  #done
 	mbl$File$"Open graph"$"from DNA sequences"$handler=defHandlerOpenSequences2Graph  #done
@@ -1630,7 +1800,7 @@ SeqGrapheR=function(){    # main function
 
 	mbl$File$Import$Contigs$handler=defHandlerImportContigs			#done
 	mbl$File$Import$"Blast results (tabular format)"$handler=defHandlerImportBlastTable
-	#mbl$File$Import$"Color scheme"$handler=defHandler
+                                        #mbl$File$Import$"Color scheme"$handler=defHandler
 
 	mbl$File$Export$"Selected Ids lists"$handler=defHandlerSaveMultipleLists
 	mbl$File$Export$"Current graph projection"$handler=defHandlerSaveCurrentProjection#
@@ -1661,15 +1831,113 @@ SeqGrapheR=function(){    # main function
 	gui$mb = gmenu(mbl, container=gui$groupMenu)
 
   gui$iconStripMain = gframe(container=gui$groupMenu,horizontal=TRUE,expand=FALSE)
-  gui$iconStrip1 = gframe(text="Ids and list manipulation", container=gui$iconStripMain,horizontal=FALSE,expand=TRUE)
+
+  
+
+  gui$iconStrip1 = gframe(text="Ids and list manipulation", container=gui$iconStripMain,horizontal=FALSE,
+                          expand=TRUE)
   gui$iconStrip2 = gframe(text="Tools",container=gui$iconStripMain,horizontal=FALSE,expand=TRUE)
   gui$iconStrip3 = gframe(text="Graph mode", container=gui$iconStripMain,horizontal=FALSE,expand=TRUE)
 
-	gui$desktop= gframe(container=gui$groupMenu,horizontal=TRUE,expand=TRUE)
-	## group for data window
-	#gui$gdl = glayout(cont = gui$groupMenu,homogeneous=TRUE,spacing=1)
+  ##gui$iconStrip1 = gframe(text="Ids and list manipulation", container=gui$MainTab,horizontal=FALSE,
+  ##                      expand=TRUE)
+  ##gui$iconStrip2 = gframe(text="Tools",container=gui$MainTab,horizontal=FALSE,expand=TRUE)
+  ##gui$iconStrip3 = gframe(text="Graph mode", container=gui$MainTab,horizontal=FALSE,expand=TRUE)
 
 
+
+  gui$topTabs = gnotebook(container = gui$groupMenu, expand=TRUE)
+
+  ##gui$desktop= gframe(container=gui$groupMenu,horizontal=TRUE,expand=TRUE)
+  gui$DataLoader=ggroup(container=gui$topTabs, label="Data", horizontal = FALSE, exapand=TRUE)
+	gui$desktop = gframe(container=gui$topTabs,horizontal=TRUE,expand=FALSE, label="Analysis")
+
+############################################################################################
+  ## data loader tab configuration:
+  ##
+  ##CLUSTER DIRECTORY
+  gui$DataLoaderLine0 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gui$DataLoader_cluster_DIR = gfilebrowse(text="select cluster directory..", type = "selectdir",
+                       container = gui$DataLoaderLine0, quote=FALSE,
+                       handler = defHandlerClusterDirChecker)
+  addSpace(gui$DataLoader, 40, horizontal=FALSE)
+  space1 = 30
+  space2 = 30
+  ##
+  glabel(text = "file    data", container = gui$DataLoader, anchor=c(-1,0))
+  glabel(text = "ok     loaded", container = gui$DataLoader, anchor=c(-1,0))
+  gui$DataLoaderLine1 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gui$DataLoader_GL_status = gimage("no", dirname="stock", container = gui$DataLoaderLine1)
+  addSpace(gui$DataLoaderLine1, space1)
+  gui$DataLoader_GL_loaded = gimage("no", dirname="stock", container = gui$DataLoaderLine1)
+  addSpace(gui$DataLoaderLine1, space2)
+  gui$DataLoader_GL = gfilebrowse(text="select GL file..", quote=FALSE, container=gui$DataLoaderLine1,
+                      filter=list(
+                        "GL files" = list(patterns="*.GL"),
+                        "All files" = list(patterns="*")
+                      ),
+                      handler = defHandlerGLfileChecker
+                      )
+  ##
+  ##
+  gui$DataLoaderLine2 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gui$DataLoader_ACE_status = gimage("no", dirname="stock", container = gui$DataLoaderLine2)
+  addSpace(gui$DataLoaderLine2, space1)
+  gui$DataLoader_ACE_loaded = gimage("no", dirname="stock", container = gui$DataLoaderLine2)
+  addSpace(gui$DataLoaderLine2, space2)
+  gui$DataLoader_ACE = gfilebrowse(text="select ACE file..", quote=FALSE, container=gui$DataLoaderLine2,
+                       filter=list(
+                         "ACE files" = list(patterns="*.ace"),
+                         "All files" = list(patterns="*")
+                       ),
+                       handler = defHandlerACEfileChecker
+                       )
+  gui$DataLoader_chck_ACE = gcheckbox(text="",checked=FALSE, container = gui$DataLoaderLine2)
+  ##
+  ##
+  gui$DataLoaderLine3 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gui$DataLoader_reads_status = gimage("no", dirname="stock", container = gui$DataLoaderLine3)
+  addSpace(gui$DataLoaderLine3, space1)
+  gui$DataLoader_reads_loaded = gimage("no", dirname="stock", container = gui$DataLoaderLine3)
+  addSpace(gui$DataLoaderLine3, space2)
+  gui$DataLoader_reads = gfilebrowse(text="select fasta file..", quote=FALSE, container=gui$DataLoaderLine3,
+                         filter=list(
+                           "fasta files" = list(patterns=c("*.fasta","*.fas", "*.fna")),
+                           "All files" = list(patterns="*")
+                         ),
+                         handler = defHandlerReadsfileChecker
+                         )
+  gui$DataLoader_chck_reads = gcheckbox(text = "", checked = FALSE, container = gui$DataLoaderLine3)
+  ##
+  ##
+  gui$DataLoaderLine4 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gui$DataLoader_domains_status = gimage("no", dirname="stock", container = gui$DataLoaderLine4)
+  addSpace(gui$DataLoaderLine4, space1)
+  gui$DataLoader_domains_loaded = gimage("no", dirname="stock", container = gui$DataLoaderLine4)
+  addSpace(gui$DataLoaderLine4, space2)
+  gui$DataLoader_domains = gfilebrowse(text="select domain csv file..", quote=FALSE, container=gui$DataLoaderLine4,
+                                     filter=list(
+                                       "csv files" = list(patterns=c("*.csv")),
+                                       "All files" = list(patterns="*")
+                                     ),
+                                     handler = defHandlerDomainfileChecker
+                                     )
+  gui$DataLoader_chck_domains = gcheckbox(text = "", checked = FALSE, container = gui$DataLoaderLine4)
+
+
+
+
+
+
+
+  gui$DataLoaderLine5 = ggroup(horizontal = FALSE, container = gui$DataLoader)
+  gui$DataLoader_chck_edges = gcheckbox(text="include edges in graph visualization", container = gui$DataLoaderLine5, checked = FALSE)
+  gui$DataLoader_chck_pairs = gcheckbox(text="pair end edges in graph visualization", container = gui$DataLoaderLine5, , checked = FALSE)
+  addSpace(gui$DataLoader, 20, horizontal=FALSE)
+  gui$DataLoaderLine6 = ggroup(horizontal = TRUE, container = gui$DataLoader)
+  gbutton(text="Clear input", handler = defHandlerClearInput, container = gui$DataLoaderLine6)
+  addSpace(gui$DataLoaderLine6, 50)
+  gbutton(text="Load data", handler = defHandlerLoadData, container = gui$DataLoaderLine6, action = "data_load")
 
 
 
@@ -1689,7 +1957,7 @@ SeqGrapheR=function(){    # main function
 	gui$colors=glayout(container=gui$gfa,border=TRUE,homogeneous=FALSE,expand=FALSE,spacing=1)
 
 	iconsPositions=matrix(c(1,2,3,1,2,3,1,2,3,1,1,1,2,2,2,3,3,3),byrow=FALSE,ncol=2)
-#	iconsPositions=matrix(c(1,2,3,4,5,6,7,8,9,1,1,1,1,1,1,1,1,1),byrow=FALSE,ncol=2)
+                                        #	iconsPositions=matrix(c(1,2,3,4,5,6,7,8,9,1,1,1,1,1,1,1,1,1),byrow=FALSE,ncol=2)
 	for (i in 1:9){
 		gui$colors[iconsPositions[i,2],iconsPositions[i,1]]=assign(iconsColor[i],value=gimage(filename=iconsColor[i],dirname=iconDir,handler=setColor,container=gui$colors,action=list(i,'color')),envir=gui)
 	}
@@ -1717,50 +1985,50 @@ SeqGrapheR=function(){    # main function
 
   ## Ids list editor in tabs
   gui$gfd=gframe(container=gui$desktop,horizontal=FALSE,expand=TRUE)
-  #glabel("Ids and List manipulation", container=gui$gfd)
+                                        #glabel("Ids and List manipulation", container=gui$gfd)
   gui$list_manipulation=gtoolbar(
     list(
       newlistfromeditor=gaction(label="Delete selected list",
-                         icon="newlistfromeditor" ,
-                         handler=defHandlerMakeNewList,
-                         tooltip="Make new list from Ids editor"),
+                                icon="newlistfromeditor" ,
+                                handler=defHandlerMakeNewList,
+                                tooltip="Make new list from Ids editor"),
       yellow2editor=gaction(label="Yellow to editor",
                             icon="yellow2editor" ,
                             handler=defHandlerYellow2editor,
                             tooltip="Show names of selected(yellow) vertices in Ids editor"),
       yellowInfo=gaction(label="Get lists",
-                             icon="yellowinfo" ,
-                             handler=defHandlerYellowLists2editor,
-                             tooltip="Shown associated list of selected(yellow) vertices in list info tab"),
+                         icon="yellowinfo" ,
+                         handler=defHandlerYellowLists2editor,
+                         tooltip="Shown associated list of selected(yellow) vertices in list info tab"),
       list2editor=gaction(label="Delete selected list",
 
-                                     icon="list2editor" ,
-                                     handler=defHandlerAdd2Editor,
+                          icon="list2editor" ,
+                          handler=defHandlerAdd2Editor,
                           tooltip="Add sequences names from selected list to editor"),
       makesublists=gaction(label="Make sublists",
-                                     icon="makesublists3" ,
+                           icon="makesublists3" ,
                            handler=defHandlerCreateSublist,
-                          tooltip="Make sublist from selected list using sequence name prefix"),
+                           tooltip="Make sublist from selected list using sequence name prefix"),
       color2lists=gaction(label="Make sublists from color",
-                                     icon="color2lists2",
-                           handler=defHandlerColors2lists,
+                          icon="color2lists2",
+                          handler=defHandlerColors2lists,
                           tooltip="Make sublist based on graph coloring"),
       deleteyellowfromeditor=gaction(label="Delete selected list",
-                                icon="deleteyellowfromeditor" ,
-                                handler=defHandlerRemoveFromEditor,
-                                tooltip="Remove read names of selected vertices from ids editor"),
+                                     icon="deleteyellowfromeditor" ,
+                                     handler=defHandlerRemoveFromEditor,
+                                     tooltip="Remove read names of selected vertices from ids editor"),
       deletelist=gaction(label="Delete selected list",
-                          icon="deletelist" ,
-                          handler=defHandlerDeleteSelectedList,
+                         icon="deletelist" ,
+                         handler=defHandlerDeleteSelectedList,
                          tooltip="Delete selected list from Ids list selector"),
       cleareditor=gaction(label="Clear editor",
                           icon="cleareditor",
                           handler=defHandlerClearEditor,
                           tooltip="Clear editor"),
       deselect_vertices=gaction(label="Clear selection",
-                          icon="deselect",
-                          handler=defHandlerDeselectAll,
-                          tooltip="Clear vertices selection")
+                                icon="deselect",
+                                handler=defHandlerDeselectAll,
+                                tooltip="Clear vertices selection")
 
     ),container=gui$iconStrip1, style="both-horiz")
 
@@ -1768,17 +2036,17 @@ SeqGrapheR=function(){    # main function
   gui$list_manipulation=gtoolbar(
     list(
       readDegreeHistogram=gaction(label="Vertex degree histogram",
-                         icon="histogram_degree" ,
-                         handler=defHandlerShowDegreeHistogram,
-                         tooltip="Show vertex degreee histogram"),
+                                  icon="histogram_degree" ,
+                                  handler=defHandlerShowDegreeHistogram,
+                                  tooltip="Show vertex degreee histogram"),
       dotterFromReads=gaction(label="Dotplot from reads",
-                                  icon="dotter" ,
-                                  handler=defHandlerDotter,
+                              icon="dotter" ,
+                              handler=defHandlerDotter,
                               tooltip="Show dotplot from selected reads"),
       dotterFromContigs=gaction(label="Dotplot from contigs",
-                              icon="dotter_contig" ,
-                              handler=defHandlerDotterContig,
-                              tooltip="Show dotplot from selected contigs")
+                                icon="dotter_contig" ,
+                                handler=defHandlerDotterContig,
+                                tooltip="Show dotplot from selected contigs")
     ),container=gui$iconStrip2, style="both-horiz")
 
 
@@ -1789,17 +2057,17 @@ SeqGrapheR=function(){    # main function
                         handler=defHandlerZoomMode,
                         tooltip="switch to zoom mode"),
       brush_mode=gaction(label="brush mode",
-                        icon="brush" ,
-                        handler=defHandlerBrushMode,
-                        tooltip="switch to brushing mode"),
+                         icon="brush" ,
+                         handler=defHandlerBrushMode,
+                         tooltip="switch to brushing mode"),
       xy_mode=gaction(label="2D mode",
-                         icon="xyview" ,
-                         handler=defHandlerXYMode,
-                         tooltip="switch to 2d plot"),
+                      icon="xyview" ,
+                      handler=defHandlerXYMode,
+                      tooltip="switch to 2d plot"),
       d3_mode=gaction(label="3D mode",
-                         icon="3dview" ,
-                         handler=defHandlerRotationMode,
-                         tooltip="switch to 3d plot")
+                      icon="3dview" ,
+                      handler=defHandlerRotationMode,
+                      tooltip="switch to 3d plot")
 
     ),container=gui$iconStrip3, style="both-horiz")
 
@@ -1807,10 +2075,11 @@ SeqGrapheR=function(){    # main function
 
 
 
-  # tabs of noteboook
+                                        # tabs of noteboook
   gui$gfdNotebook=gnotebook(container=gui$gfd,horizontal=FALSE,expand=TRUE)
-  #gui$ListEditor=gtext(container=gui$gfdNotebook,expand=TRUE,horizontal=FALSE, label="Lists info")
-  gui$ListInfo=gtable(envGL$IdsListDataFrame, container=gui$gfdNotebook,expand=TRUE,
+  ##gui$ListEditor=gtext(container=gui$gfdNotebook,expand=TRUE,horizontal=FALSE, label="Lists info")
+
+  gui$ListInfo=gtable(envGL$IdsListDataFrame, container=gui$gfdNotebook,expand=FALSE,
                       label="Lists info", multiple=TRUE, chosencol=4,
                       handler=defHandlerDoubleClickHighlight2)
   gui$IdsEditor=gtext(container=gui$gfdNotebook,expand=TRUE,horizontal=FALSE, label="Ids editor")
@@ -1818,14 +2087,17 @@ SeqGrapheR=function(){    # main function
   gui$graphicsWindow = gframe(container = gui$gfd, horizontal = FALSE, 
                               expand = TRUE)
 
-  gui$StatusBar=gstatusbar(text = "", container = gui$winMain,expand=TRUE)
+  ##  gui$StatusBar=gstatusbar(text = "", container = gui$winMain,expand=FALSE)
+  gui$StatusBar=gtext(text = "", container = gui$DataLoader, height = 300,
+                      width = 600, anchor=c(-1,-1), wrap = TRUE,
+                      font.attr=c(family="monospace", size=8))
+  enabled(gui$StatusBar) = FALSE
 
-
-  size(gui$winMain)=c(900,780)
-	#size(gui$gfb)[1]=0
-	#size(gui$graphicsWindow)[2]=100
-	#size(gui$gfdEditor)[1]=0
+  size(gui$winMain)=c(1200,900)
+                                        #size(gui$gfb)[1]=0
+                                        #size(gui$graphicsWindow)[2]=100
+                                        #size(gui$gfdEditor)[1]=0
 	visible(gui$winMain)=TRUE
 	output=list(envGL=envGL,gui=gui)
-#
+                                        #
 }
