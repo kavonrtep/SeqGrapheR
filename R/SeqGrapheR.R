@@ -267,6 +267,8 @@ SeqGrapheR=function(){    # main function
 		pos2=c(pos1[-1],length(ACE))
 		contigNames=gsub("^CO ",">",contigNames)
 		contigNames=gsub(" .*","",contigNames)
+    names(pos1) = names(pos2) = gsub(">","", contigNames)
+    contigPositionInAce=list(pos1=pos1, pos2=pos2 - 1)
 		N=length(contigNames)
 		contigReads=list()
     contigs = DNAStringSet(gsub("*","",
@@ -288,7 +290,7 @@ SeqGrapheR=function(){    # main function
 		contigNames=gsub(" .+$","",contigNames)
 		contigNames=gsub(">","",contigNames)
 		names(contigReads)=contigNames
-		list(contigReads=contigReads, contigs=contigs)
+		list(contigReads=contigReads, contigs=contigs,contigPositionInAce = contigPositionInAce)
 	}
 
 
@@ -793,6 +795,9 @@ SeqGrapheR=function(){    # main function
 			contigInfo=getACEcontigs2(aceFile)
       contigReads = contigInfo$contigReads
       envGL$contigs = contigInfo$contigs  # biostrings
+      envGL$contigPositionInAce=contigInfo$contigPositionInAce
+      envGL$files$aceFile = aceFile
+
 			if (length(contigReads)>0){
 				##  Group=ginput("Enter Group Label:",text="Contigs",icon='question')
         ## no need to ask - it never change
@@ -1035,7 +1040,6 @@ SeqGrapheR=function(){    # main function
     glyph_colour(envGL$g[1])=1
     glyph_size(envGL$g[1])=1
     glyph_type(envGL$g[1])=1
-    
   }
 
 	defHandlerDotter=function(h,...){
@@ -1051,6 +1055,15 @@ SeqGrapheR=function(){    # main function
 			showDotter(reads=FALSE)
 		}
 	}
+
+  getSelectedContigs = function(){
+    s1 = svalue(gui$mainData,index=FALSE)
+    s2 = svalue(gui$ListInfo,index=FALSE)
+    selectedContigsName = envGL$IdsListDataFrame[unique(c(s1,s2)),"Subset"]
+    contigs = envGL$contigs[names(envGL$contigs) %in% selectedContigsName]
+    contigs
+  }
+
 	showDotter=function(reads=TRUE){
     if (reads){
       ## dotter from reads
@@ -1070,12 +1083,8 @@ SeqGrapheR=function(){    # main function
     }else{
       ## dotter from contigs
       if (!is.null(envGL$contigs)){
-        s1 = svalue(gui$mainData,index=FALSE)
-        s2 = svalue(gui$ListInfo,index=FALSE)
-        selectedContigsName = envGL$IdsListDataFrame[unique(c(s1,s2)),"Subset"]
-                                        # TODO add contigs from list info too
-        contigs = envGL$contigs[names(envGL$contigs) %in% selectedContigsName]
-
+        contigs = getSelectedContigs
+        selectedContigsName = names(contigs)
         if (length(contigs) == 0){
           gmessage("No contigs selected")
         }
@@ -1412,8 +1421,75 @@ SeqGrapheR=function(){    # main function
 		}
 	}
 
+  defHandlerMakeGap5Project=function(h,...){
+    if (!is.null(envGL$contigs)){
+      contigs = getSelectedContigs()
+      selectedContigsName = names(contigs)
+      if (length(contigs) == 0){
+        gmessage("No contigs selected")
+      }else{
+        gap5FileBaseName=gfile("save gap5 database as..",type='save')
+        if (!is.null(gap5FileBaseName)){   # if not canceled
+          setdir(gap5FileBaseName)
+          selLines = unlist(mapply(seq,
+                                   envGL$contigPositionInAce$pos1[selectedContigsName],
+                                   envGL$contigPositionInAce$pos2[selectedContigsName],
+                                   SIMPLIFY = FALSE
+                                   )
+                            )
+          ACEpart = readLines(envGL$files$aceFile)[selLines]
+          tmpAceFile = tempfile()
+          cat(ACEpart, file = tmpAceFile, sep="\n")
+          cmd = paste(
+            "staden tg_index -A", tmpAceFile,
+            "-o", gap5FileBaseName
+          )
+          exitstatus = system(cmd, intern = FALSE, wait = TRUE)
+          if(exitstatus == 127){
+            gmessage("Database  setup failed...")
+          }else{
+            cmd = paste("gap5", gap5FileBaseName)
+            system(cmd, wait=FALSE)
+          }
+        }
+			}
+		}else{
+			galert('no contigs found!',icon='error')
+		}
+	}
+
+
+
+  defHandlerExportSelectedContigs=function(h,...){
+    ## contigs exists?
+		if (!is.null(envGL$contigs)){
+      contigs = getSelectedContigs()
+      selectedContigsName = names(contigs)
+      if (length(contigs) == 0){
+        gmessage("No contigs selected")
+      }else{
+        contigFileBaseName=gfile("save contigs as..",type='save')
+        if (!is.null(contigFileBaseName)){   # if not canceled
+          setdir(contigFileBaseName)
+          writeXStringSet(contigs, filepath = contigFileBaseName)
+          selLines = unlist(mapply(seq,
+                                   envGL$contigPositionInAce$pos1[selectedContigsName],
+                                   envGL$contigPositionInAce$pos2[selectedContigsName],
+                                   SIMPLIFY = FALSE
+                                   )
+                            )
+          ACEpart = readLines(envGL$files$aceFile)[selLines]
+          cat(ACEpart, file = paste0(contigFileBaseName, ".ace"), sep="\n")
+        }
+			}
+		}else{
+			galert('no contigs found!',icon='error')
+		}
+	}
+
+
 	subGL=function(GL,ids){
-                                        #make subgraph from GL based on Ids list
+    ## make subgraph from GL based on Ids list
 		allIds=V(GL$G)$name
 		include=which(allIds %in% ids)
 		subGL=list()
@@ -1807,8 +1883,10 @@ SeqGrapheR=function(){    # main function
 	mbl$File$Export$"Graph image"$handler=defHandlerSaveImage   #done
 	mbl$File$Export$"Selected nodes as subgraph"$handler=defHandlerSaveSubgraph
 	mbl$File$Export$"Blast results"$handler=defHandlerExportBlastTable
+	mbl$File$Export$"Selected contigs"$handler=defHandlerExportSelectedContigs
 
 
+	mbl$Tools$"Gap5 assembly of selected contigs"$handler=defHandlerMakeGap5Project   #done
 	mbl$Tools$Plot$"Read degree"$handler=defHandlerShowDegreeHistogram #done
 	mbl$Tools$Plot$"Read length"$handler=defHandlerShowLengthHistogram  #done
 	mbl$Tools$Plot$"Lengths vs. degree"$handler=defHandlerShowDegreeLengthScatter #done
