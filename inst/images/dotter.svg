@@ -52,8 +52,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="-204.49596"
-     inkscape:cy="13.666713"
+     inkscape:cx="256.97473"
+     inkscape:cy="-132.28357"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -64,7 +64,8 @@
      inkscape:window-height="1400"
      inkscape:window-x="2560"
      inkscape:window-y="18"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata1803">
     <rdf:RDF>
@@ -73,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -174,5 +175,27 @@
        id="path5936"
        inkscape:connector-curvature="0"
        transform="matrix(0.26458333,0,0,0.26458333,0,233)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 28.712765,250.57771 4.92712,-4.79348"
+       id="path1047"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 45.778589,267.92575 4.392582,-4.52621"
+       id="path1047-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       aria-label="R"
+       transform="matrix(1.1112054,0,0,0.96018758,-2.4152531,2.0052724)"
+       style="font-style:normal;font-weight:normal;font-size:50px;line-height:25px;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="flowRoot1087">
+      <path
+         d="m 23.994667,250.25729 c 0,-1.62133 0.597333,-2.13333 2.304,-2.13333 2.645334,0 5.290667,-0.768 8.021334,-0.768 9.130667,0 12.885333,6.144 12.885333,14.16533 0,7.50933 -4.522666,12.288 -12.373333,12.288 -3.669334,0 -7.424,-0.256 -10.837334,-1.70666 z m 0,24.32 c 0.938667,0.768 2.218667,1.19467 3.328,1.536 l 19.712001,25.344 c 1.450666,2.048 -0.170667,2.048 -4.437334,2.13334 -0.341333,0.42666 -0.597333,0.768 -0.597333,1.024 0,0.34133 0.256,0.59733 0.597333,1.10933 h 15.616001 c 0.341333,-0.256 0.512,-0.68267 0.512,-1.024 0,-0.42667 -0.08533,-0.768 -0.512,-1.10933 H 55.994668 L 35.088001,277.13729 c 1.450666,0.0853 2.986667,0.34134 4.522667,0.256 8.96,-0.34133 14.592,-7.76533 14.592,-15.872 0,-8.36267 -7.424,-16.384 -16.384001,-16.384 -4.437333,0 -8.789333,0.85333 -13.141333,0.85333 H 12.816 c -0.341333,0.512 -0.426667,0.768 -0.426667,1.10934 0,0.256 0.08533,0.59733 0.426667,1.024 h 2.048 c 2.304,0 2.474667,0.512 2.474667,2.13333 v 51.2 c 0,2.048 -2.304,2.13334 -4.522667,2.13334 -0.256,0.256 -0.426667,0.768 -0.426667,1.10933 0,0.34133 0.170667,0.68267 0.426667,1.024 h 15.701334 c 0.256,-0.256 0.426667,-0.68267 0.426667,-1.024 0,-0.42667 -0.08533,-0.768 -0.426667,-1.10933 -2.218667,0 -4.522667,-0.0853 -4.522667,-2.13334 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.33333588px;font-family:'Accanthis ADF Std';-inkscape-font-specification:'Accanthis ADF Std'"
+         id="path1095" />
+    </g>
   </g>
 </svg>

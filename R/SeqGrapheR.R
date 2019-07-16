@@ -892,7 +892,7 @@ SeqGrapheR=function(){    # main function
       envGL$IdsListDataFrame=rbind(envGL$IdsListDataFrame,listsDf)
 			envGL$IdsListVisible=c(envGL$IdsListVisible,rep(TRUE,M))
 			updateIdsListDataWindow()
-		}else{galert('No list with sequences from the graph!')}
+		}else{gmessage('No list with sequences from the graph!')}
 	}
 
 
@@ -1417,18 +1417,28 @@ SeqGrapheR=function(){    # main function
 				write.table(envGL$lastBlast,file=blastFile,sep='\t',quote=F,col.names=F,row.names=F)
 			}
 		}else{
-			galert('no blast result!',icon='error')
+			gmessage('no blast result!',icon='error')
 		}
 	}
 
-  defHandlerMakeGap5Project=function(h,...){
+  opengap5=function(append=FALSE){
     if (!is.null(envGL$contigs)){
       contigs = getSelectedContigs()
       selectedContigsName = names(contigs)
       if (length(contigs) == 0){
         gmessage("No contigs selected")
       }else{
-        gap5FileBaseName=gfile("save gap5 database as..",type='save')
+        if (append){
+          gap5FileBaseName=gfile("select gap5 database",type='open',
+                                 filter = list("gap5 database"=list(patterns = c("*.g5d")),
+                                               "All files"=list(patterns = c("*"))
+                                               )
+                                 )
+          opt=" -a " ## staden option for append
+        }else{
+          gap5FileBaseName=gfile("save gap5 database as..",type='save')
+          opt=""
+        }
         if (!is.null(gap5FileBaseName)){   # if not canceled
           setdir(gap5FileBaseName)
           selLines = unlist(mapply(seq,
@@ -1441,7 +1451,7 @@ SeqGrapheR=function(){    # main function
           tmpAceFile = tempfile()
           cat(ACEpart, file = tmpAceFile, sep="\n")
           cmd = paste(
-            "staden tg_index -A", tmpAceFile,
+            "staden tg_index",opt, " -A", tmpAceFile,
             "-o", gap5FileBaseName
           )
           exitstatus = system(cmd, intern = FALSE, wait = TRUE)
@@ -1454,11 +1464,17 @@ SeqGrapheR=function(){    # main function
         }
 			}
 		}else{
-			galert('no contigs found!',icon='error')
+			gmessage('no contigs found!',icon='error')
 		}
 	}
 
+  defHandlerAppendToGap5Project=function(h,...){
+    opengap5(append=TRUE)
+  }
 
+  defHandlerMakeGap5Project=function(h,...){
+    opengap5(append=FALSE)
+  }
 
   defHandlerExportSelectedContigs=function(h,...){
     ## contigs exists?
@@ -1483,7 +1499,7 @@ SeqGrapheR=function(){    # main function
         }
 			}
 		}else{
-			galert('no contigs found!',icon='error')
+			gmessage('no contigs found!',icon='error')
 		}
 	}
 
@@ -1833,7 +1849,9 @@ SeqGrapheR=function(){    # main function
                         "3dview.svg",
                         "deselect.svg",
                         "dotter.svg",
-                        "dotter_contig.svg"
+                        "dotter_contig.svg",
+                        "assembly.svg",
+                        "assembly_append.svg"
                       ))
 
   addStockIcons(gsub(".svg$","", basename(icon_files)), icon_files)
@@ -1886,7 +1904,8 @@ SeqGrapheR=function(){    # main function
 	mbl$File$Export$"Selected contigs"$handler=defHandlerExportSelectedContigs
 
 
-	mbl$Tools$"Gap5 assembly of selected contigs"$handler=defHandlerMakeGap5Project   #done
+	mbl$Tools$"Gap5 assembly of selected contigs"$handler=defHandlerMakeGap5Project 
+	mbl$Tools$"Add selected contigs to gap5 project"$handler=defHandlerAppendToGap5Project 
 	mbl$Tools$Plot$"Read degree"$handler=defHandlerShowDegreeHistogram #done
 	mbl$Tools$Plot$"Read length"$handler=defHandlerShowLengthHistogram  #done
 	mbl$Tools$Plot$"Lengths vs. degree"$handler=defHandlerShowDegreeLengthScatter #done
@@ -2124,7 +2143,15 @@ SeqGrapheR=function(){    # main function
       dotterFromContigs=gaction(label="Dotplot from contigs",
                                 icon="dotter_contig" ,
                                 handler=defHandlerDotterContig,
-                                tooltip="Show dotplot from selected contigs")
+                                tooltip="Show dotplot from selected contigs"),
+      gap5assembly=gaction(label="assembly",
+                           icon="assembly" ,
+                           handler=defHandlerMakeGap5Project,
+                           tooltip="Gap5 assembly of selected contigs"),
+      gap5assemblyAppend=gaction(label="assembly_append",
+                           icon="assembly_append" ,
+                           handler=defHandlerAppendToGap5Project,
+                           tooltip="Add selected contigs to gap5 project")
     ),container=gui$iconStrip2, style="both-horiz")
 
 
