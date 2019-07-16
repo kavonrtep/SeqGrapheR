@@ -353,16 +353,17 @@ SeqGrapheR=function(){    # main function
 
 
                                         # show graph in ggobi
-                                        # added to show pairs edges in graph:
+  ## added to show pairs edges in graph:
   get_pairs=function(GL){
-                                        # check if last character label pair
+    ## check if last character label pair
     label = substring(V(GL$G)$name,nchar(V(GL$G)$name))
-    if (length(unique(label))==2){
+    ulab = unique(label)
+    if (length(ulab)==2){
       id=gsub(".{1}$","",V(GL$G)$name)
       tbl = table(id, label)
-      tbl=tbl[tbl[,1]==1 & tbl[,1]==1,][]
-      v1 = paste(rownames(tbl),label[1],sep="")
-      v2 = paste(rownames(tbl),label[2],sep="")
+      tbl=tbl[tbl[,1]==1 & tbl[,2]==1,][]
+      v1 = paste(rownames(tbl),ulab[1],sep="")
+      v2 = paste(rownames(tbl),ulab[2],sep="")
       return(cbind(v1,v2))
     }else{
       return(NULL)

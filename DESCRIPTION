@@ -1,7 +1,7 @@
 Package: SeqGrapheR
 Type: Package
 Title:Simple GUI for Graph Based Visualization of Cluster of DNA Sequence Reads
-Version: 0.5.0.2.1
+Version: 0.5.0.2.2
 Date: 2019-07-16
 Author: Petr Novak
 Maintainer: Petr Novak <petr@umbr.cas.cz>

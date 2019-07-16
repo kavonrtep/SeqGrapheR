@@ -4,16 +4,38 @@ SeqGrapheR is a program for vizualization and exploration of sequence based
 graphs generated in RepeatExplorer output. More information about RepeatExplorer can be found
 on http://repeatexplorer.org/
 
-Introduction to SeqGrapheR can be found in [[https://github.com/kavonrtep/SeqGrapheR/blob/master/vignettes/SeqGrapheR.pdf][vignette]]
+Introduction to SeqGrapheR can be found in [[https://github.com/kavonrtep/SeqGrapheR/blob/master/vignettes/SeqGrapheR.pdf][vignette]] (obsolete).
 
 * Installation
 
-Installation require R package =devtools=
+SeqGrapheR requires program ggobi(http://www.ggobi.org/docs/) installed.
+
+For full functionality, SeqGrapheR needs the following programs installed in path:
+- Staden (http://staden.sourceforge.net/)
+- Dotter (https://www.sanger.ac.uk/science/tools/seqtools)
+- legacy NCBI blast (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/)
+
+In Debian based linux distributions, the above programs can be installed using:
+#+BEGIN_SRC sh
+sudo apt-get install ncbi-blast+-legacy acedb-other-dotter staden ggobi
+#+END_SRC
+
+
+Installation requires R package =devtools= and Bioconductor package =Biostrings=
 
 #+BEGIN_SRC R
+# install devtools:
+install.packaged("devtools")
+# install biostrings:
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("Biostrings")
 library(devtools)
 install_github("kavonrtep/SeqGrapheR")
 #+END_SRC
+
+
 
 * How to run SeqGrapheR
 
