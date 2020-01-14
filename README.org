@@ -10,22 +10,26 @@ Introduction to SeqGrapheR can be found in [[https://github.com/kavonrtep/SeqGra
 
 SeqGrapheR requires program ggobi(http://www.ggobi.org/docs/) installed.
 
-For full functionality, SeqGrapheR needs the following programs installed in path:
+For full functionality, SeqGrapheR needs also the following programs installed:
 - Staden (http://staden.sourceforge.net/)
 - Dotter (https://www.sanger.ac.uk/science/tools/seqtools)
 - legacy NCBI blast (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/)
 
-In Debian based linux distributions, the above programs can be installed using:
+In Debian/Ubuntu based linux distributions, the above programs can be installed using:
 #+BEGIN_SRC sh
-sudo apt-get install ncbi-blast+-legacy acedb-other-dotter staden ggobi
+sudo apt-get -y install ncbi-blast+-legacy acedb-other-dotter staden ggobi
 #+END_SRC
 
+R programming environment and some dependencies can be installed using:
+#+begin_src sh
+sudo apt-get -y install r-base libcurl4-openssl-dev libxml2-dev libgtk2.0-dev libssl-dev
+#+end_src
 
-Installation requires R package =devtools= and Bioconductor package =Biostrings=
-
+Installation requires R package =devtools= and Bioconductor package =Biostrings=.
+Start R session in terminal and install R packages:
 #+BEGIN_SRC R
 # install devtools:
-install.packaged("devtools")
+install.packages("devtools")
 # install biostrings:
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -35,6 +39,18 @@ library(devtools)
 install_github("kavonrtep/SeqGrapheR")
 #+END_SRC
 
+** Alternative installation using conda
+
+R packages and dependencies can be installed using conda. 
+#+begin_src bash
+conda create -n seqgrapher -c petrnovak -c iuc -c conda-forge -c bioconda -c pkgw-forge r-seqgrapher
+#+end_src>
+
+activate =seqgrapher= environment using:
+
+#+begin_src bash
+conda activate seqgrapher
+#+end_src>
 
 
 * How to run SeqGrapheR
