@@ -585,13 +585,14 @@ SeqGrapheR=function(){    # main function
 	}
                                         # open GL file and crerate ggobi object,
 	defHandlerOpenGL=function(h,...){
+
     if (is.null(h$action)){
       ## started from menu
       glfile=gfile(text='select graph file', type = "open",
                    filter = list("GL graph" = list(patterns = c("*.GL")), "All files" = list(patterns = c("*"))),
                    handler = function(h,...) return(h$file))
       ## set it back to data loader:
-      svalue(gui$DataLoader_GL) = gfile
+      svalue(gui$DataLoader_GL) = glfile
     }else{
       if(h$action=="data_load"){
         glfile = svalue(gui$DataLoader_GL)
@@ -642,7 +643,7 @@ SeqGrapheR=function(){    # main function
         svalue(gui$StatusBar)=paste("Graph loaded from file:\n",
                                     glfile,"Graph size:\nV=",vcount(envGL$GL$G),
                                     "\nE=",ecount(envGL$GL$G),"\n",sep='')
-        svalue(gui$DataLoader_GL_loaded)="ok"
+        svalue(gui$DataLoader_GL_loaded)="yes"
         return(TRUE)
 			}else{#wrong file
 				gmessage("Wrong file format", title="message",icon ="error")
@@ -764,7 +765,7 @@ SeqGrapheR=function(){    # main function
 					gmessage("wrong sequence file",icon='error')
 				}
 			}
-    svalue(gui$DataLoader_reads_loaded)="ok"
+    svalue(gui$DataLoader_reads_loaded)="yes"
     insert(gui$StatusBar, paste(length(envGL$GL$Seq)," reads loaded\n"))
     return(TRUE)
 		}else{
@@ -816,7 +817,7 @@ SeqGrapheR=function(){    # main function
 				}
 			}
 		}
-    svalue(gui$DataLoader_ACE_loaded)="ok"
+    svalue(gui$DataLoader_ACE_loaded)="yes"
     insert(gui$StatusBar, paste(length(envGL$contigs)," contigs loaded\n"))
     return(TRUE)
 	}
@@ -1084,7 +1085,7 @@ SeqGrapheR=function(){    # main function
     }else{
       ## dotter from contigs
       if (!is.null(envGL$contigs)){
-        contigs = getSelectedContigs
+        contigs = getSelectedContigs()
         selectedContigsName = names(contigs)
         if (length(contigs) == 0){
           gmessage("No contigs selected")
@@ -1400,7 +1401,7 @@ SeqGrapheR=function(){    # main function
 				colnames(blast)=c('Query', 'Subject', 'alignmentLength', 'bitScore','percIdentity')
 				blastHistogram(blast)
 				envGL$lastBlast=blast
-        svalue(gui$DataLoader_domains_loaded)="ok"
+        svalue(gui$DataLoader_domains_loaded)="yes"
         insert(gui$StatusBar, paste("blast table with ", nrow(blast),"rows loaded\n"))
         return(TRUE)
 			}else{
@@ -1723,7 +1724,7 @@ SeqGrapheR=function(){    # main function
   ## hanlers for data loader:
   defHandlerGLfileChecker=function(h,...){
     if (system(paste("file -b ", svalue(gui$DataLoader_GL)), intern = TRUE, ignore.stderr = TRUE)=="gzip compressed data, from Unix"){
-      svalue(gui$DataLoader_GL_status)="ok"
+      svalue(gui$DataLoader_GL_status)="yes"
     }else{
       svalue(gui$DataLoader_GL_status)="no"
     }
@@ -1731,7 +1732,7 @@ SeqGrapheR=function(){    # main function
 
   defHandlerACEfileChecker=function(h,...){
     if (system(paste("file -b ", svalue(gui$DataLoader_ACE)), intern = TRUE, ignore.stderr = TRUE)=="ASCII text"){
-      svalue(gui$DataLoader_ACE_status)="ok"
+      svalue(gui$DataLoader_ACE_status)="yes"
       svalue(gui$DataLoader_chck_ACE)=TRUE
     }else{
       svalue(gui$DataLoader_ACE_status)="no"
@@ -1741,7 +1742,7 @@ SeqGrapheR=function(){    # main function
 
   defHandlerReadsfileChecker=function(h,...){
     if (system(paste("file -b ", svalue(gui$DataLoader_reads)), intern = TRUE, , ignore.stderr = TRUE)=="ASCII text"){
-      svalue(gui$DataLoader_reads_status) = "ok"
+      svalue(gui$DataLoader_reads_status) = "yes"
       svalue(gui$DataLoader_chck_reads) = TRUE
     }else{
       svalue(gui$DataLoader_reads_status)="no"
@@ -1752,10 +1753,15 @@ SeqGrapheR=function(){    # main function
   defHandlerDomainfileChecker=function(h,...){
     cond1 = system(paste("file -b ", svalue(gui$DataLoader_reads)), intern = TRUE, , ignore.stderr = TRUE)=="ASCII text"
     ## check header!
-    cond2 = readLines(svalue(gui$DataLoader_domains),n = 1) == "name	db_id	length	bitscore	pid"
-    if (cond1 & cond2){
-      svalue(gui$DataLoader_domains_status) = "ok"
-      svalue(gui$DataLoader_chck_domains) = TRUE
+    if (cond1){
+      cond2 = readLines(svalue(gui$DataLoader_domains),n = 1) == "name	db_id	length	bitscore	pid"
+      if (cond2){
+        svalue(gui$DataLoader_domains_status) = "yes"
+        svalue(gui$DataLoader_chck_domains) = TRUE
+      }
+      else{
+        svalue(gui$DataLoader_domains_status)="no"
+      }
     }else{
       svalue(gui$DataLoader_domains_status)="no"
     }
@@ -1764,15 +1770,15 @@ SeqGrapheR=function(){    # main function
   defHandlerClusterDirChecker=function(h,...){
     if (dir.exists(svalue(gui$DataLoader_cluster_DIR))){
       setwd(svalue(gui$DataLoader_cluster_DIR))
-      GLfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "CL.+[.]GL", full.names = TRUE)
+      GLfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = ".+[.]GL", full.names = TRUE)
       if (length(GLfile)>0){
         svalue(gui$DataLoader_GL) = GLfile[1]
       }
-      ACEfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = ".*CL.+[.]ace", full.names = TRUE)
+      ACEfile=dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = ".+[.]ace", full.names = TRUE)
       if (length(ACEfile)>0){
         svalue(gui$DataLoader_ACE) = ACEfile[1]
       }
-      ReadsFile = dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "^reads[.]fas$", full.names = TRUE)
+      ReadsFile = dir(path = svalue(gui$DataLoader_cluster_DIR), pattern = "^reads[.]fas(ta){0,1}$", full.names = TRUE)
       if (length(ReadsFile) == 1){
         svalue(gui$DataLoader_reads) = ReadsFile
       }
@@ -1958,6 +1964,7 @@ SeqGrapheR=function(){    # main function
   gui$DataLoader_cluster_DIR = gfilebrowse(text="select cluster directory..", type = "selectdir",
                        container = gui$DataLoaderLine0, quote=FALSE,
                        handler = defHandlerClusterDirChecker)
+  glabel(text="If you select cluster directory, path to individual files (GL, ACE, reads and domains) will be added automaticaly   ", container = gui$DataLoader, anchor=c(-1,0))
   addSpace(gui$DataLoader, 40, horizontal=FALSE)
   space1 = 30
   space2 = 30

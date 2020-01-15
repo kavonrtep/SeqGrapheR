@@ -52,10 +52,18 @@ activate =seqgrapher= environment using:
 conda activate seqgrapher
 #+end_src>
 
+programs =Staden= and =dotter= are not available in Anaconda repository and must
+be installed from linux distrubution repository. In Debian/Ubuntu based linux
+distributions, you can use command
+
+#+begin_src 
+sudo apt-get -y install acedb-other-dotter staden 
+#+end_src
+
 
 * How to run SeqGrapheR
 
-In R session run:
+In terminal window start =R= environment. In R session run:
 #+BEGIN_SRC R
 library(SeqGrapheR)
 # start GUI:
