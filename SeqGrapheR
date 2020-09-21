@@ -1,0 +1,11 @@
+#!/usr/bin/env Rscript
+cat("Starting SeqGrapheR\n")
+# this is to prevent loading libraries fro user home
+.libPath(c("/usr/local/lib/R/site-library",
+           "/usr/lib/R/site-library",
+           "/usr/lib/R/library"))
+library(SeqGrapheR)
+library(future)
+plan(multisession)
+sg %<-% SeqGrapheR()
+s %<-% Sys.sleep(Inf)
