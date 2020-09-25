@@ -9,12 +9,14 @@ From: ubuntu:20.04
     apt-get -y update
     apt-get -y install ncbi-blast+-legacy acedb-other-dotter staden ggobi
     apt-get -y install r-base libcurl4-openssl-dev libxml2-dev libgtk2.0-dev libssl-dev build-essential gfortran libblas-dev liblapack-dev r-cran-future
+    apt-get -y install libatk-adaptor 
     Rscript /opt/R_install.R
     
 
 %environment
     export LC_ALL=C
     export PATH=/usr/games:$PATH
+    export NO_AT_BRIDGE=1
 
 %runscript
     SeqGrapheR
