@@ -6,6 +6,8 @@ cat("Starting SeqGrapheR\n")
            "/usr/lib/R/library"))
 library(SeqGrapheR)
 library(future)
+
 plan(multisession)
+
 sg %<-% SeqGrapheR()
-s %<-% Sys.sleep(Inf)
+Sys.sleep(Inf)
