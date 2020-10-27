@@ -53,11 +53,11 @@ This is the simplest way how to run SeqGrapheR. Singularity can be installed eit
 conda install -c conda-forge singularity=3.6.3
 #+end_src
 
-Tehn, run SeqGrapheR use command:
+Then, run SeqGrapheR use command:
 #+begin_src bash
 singularity run shub://kavonrtep/SeqGrapheR
 #+end_src
-With the above command you can automatically access data in you home directory. If you need to work with data which are not located in your home  directory use command:
+With the above command you can automatically access data in you home directory. If you need to work with data which are not located in your home  directory use the command:
 #+begin_src bash
 singularity run -B /path_to_you_data_directory:/data shub://kavonrtep/SeqGrapheR
 #+end_src
