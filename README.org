@@ -8,7 +8,7 @@ Introduction to SeqGrapheR can be found in [[https://github.com/kavonrtep/SeqGra
 
 * Installation
 
-SeqGrapheR requires program ggobi(http://www.ggobi.org/docs/) installed.
+SeqGrapheR requires program ggobi (http://www.ggobi.org/docs/) installed.
 
 For full functionality, SeqGrapheR needs also the following programs installed:
 - Staden (http://staden.sourceforge.net/)
@@ -39,6 +39,31 @@ library(devtools)
 install_github("kavonrtep/SeqGrapheR")
 #+END_SRC
 
+Note the  installation of SeqGrapheR  fails because packages gWidgets, gWidgetsRGtk2 and rggobi are not supported by your R version, you can try to install these packages manually from archived packages:
+#+begin_src R
+install_version("gWidgets", version = "0.0-54.1", repos = "http://cran.us.r-project.org")
+install_version("gWidgetsRGtk2", version = "0.0-86", repos = "http://cran.us.r-project.org")
+install_version("rggobi", version = "2.1.22", repos = "http://cran.us.r-project.org")
+#+end_src
+
+
+** Alternative installation using Singularity container
+This is the simplest way how to run SeqGrapheR. Singularity can be installed either from source (see installation guide https://sylabs.io/guides/latest/user-guide/) or it can be installed using conda:
+#+begin_src bash
+conda install -c conda-forge singularity=3.6.3
+#+end_src
+
+Tehn, run SeqGrapheR use command:
+#+begin_src bash
+singularity run shub://kavonrtep/SeqGrapheR
+#+end_src
+With the above command you can automatically access data in you home directory. If you need to work with data which are not located in your home  directory use command:
+#+begin_src bash
+singularity run -B /path_to_you_data_directory:/data shub://kavonrtep/SeqGrapheR
+#+end_src
+this way the local directory  =/path_to_you_data_directory= will be bind to directory =/data= in singularity container.
+
+
 ** Alternative installation using conda
 
 R packages and dependencies can be installed using conda. 
@@ -59,6 +84,7 @@ distributions, you can use command
 #+begin_src 
 sudo apt-get -y install acedb-other-dotter staden 
 #+end_src
+
 
 
 * How to run SeqGrapheR
