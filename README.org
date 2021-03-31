@@ -128,7 +128,7 @@ sudo /etc/init.d/xrdp start
 #+end_src
 
 Remote Desktop to th virtual machine (localhost:3390) and open a terminal.
-Before you can continue with the install you'll need to check if the PKG_CONFIG_PATH environment variable is set. If not, set it to "/
+Before you can continue with the install you'll need to check if the PKG_CONFIG_PATH environment variable is set. If not, set it to "usr/lib/pkgconfig".
 
 #+begin_src bash
 echo $PKG_CONFIG_PATH
