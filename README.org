@@ -85,7 +85,80 @@ distributions, you can use command
 sudo apt-get -y install acedb-other-dotter staden 
 #+end_src
 
+** Alternative installation using Windows Subsystem for Linux (WSL)
 
+Because SeqGrapheR has a graphical user interface you will probably need to set up xrdp to Remote Desktop onto the linux virtual machine.
+There is a guide here to do that: https://dev.to/darksmile92/linux-on-windows-wsl-with-desktop-environment-via-rdp-522g
+
+One of the comments from the link above suggests these steps. Open WSL and run:
+
+#+begin_src bash
+sudo apt-get install xrdp
+sudo apt-get install xfce4
+sudo apt-get install xfce4-goodies
+sudo cp /etc/xrdp/xrdp.ini /etc/xrdp/xrdp.ini.bak
+sudo sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
+sudo sed -i 's/max_bpp=32/#max_bpp=32\nmax_bpp=128/g' /etc/xrdp/xrdp.ini
+sudo sed -i 's/xserverbpp=24/#xserverbpp=24\nxserverbpp=128/g' /etc/xrdp/xrdp.ini
+echo xfce4-session > ~/.xsession
+#+end_src
+
+You'll then need to edit the /// file. You can use any command-line editor to do this, e.g. nano.
+#+begin_src bash
+sudo nano /etc/xrdp/startwm.sh
+#+end_src
+
+Comment out these lines:
+
+#+begin_src
+#test -x /etc/X11/Xsession && exec /etc/X11/Xsession
+#exec /bin/sh /etc/X11/Xsession
+#+end_src
+
+And add these lines to the bottom of the file: 
+#+begin_src
+# xfce
+startxfce4
+#+end_src
+
+Once that's set up you should be able to run the command below and use Remote Desktop to connect to your virtual machine.
+
+#+begin_src bash
+sudo /etc/init.d/xrdp start
+#+end_src
+
+Remote Desktop to th virtual machine (localhost:3390) and open a terminal.
+Before you can continue with the install you'll need to check if the PKG_CONFIG_PATH environment variable is set. If not, set it to "usr/lib/pkgconfig".
+
+#+begin_src bash
+echo $PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+#+end_src
+
+When you launch R you can check if this environment variable is set correctly with the following line:
+#+begin_src
+Sys.getenv("PKG_CONFIG_PATH")
+#+end_src
+
+NOTE: If running R with the sudo command you'll want to use the -E option to preserve environment variables.
+
+The following commands will get SeqGrapheR up and running:
+
+#+begin_src bash
+sudo apt-get -y install r-base ncbi-blast+-legacy acedb-other-dotter staden ggobi libcurl4-openssl-dev libxml2-dev libgtk2.0-dev libssl-dev build-essential gfortran libblas-dev liblapack-dev
+
+sudo -E R
+Sys.getenv("PKG_CONFIG_PATH")
+install.packages("devtools")
+install.packages("BiocManager")
+BiocManager::install("Biostrings")
+library(devtools)
+install_version("gWidgets", version = "0.0-54.1", repos = "http://cran.us.r-project.org")
+install_version("gWidgetsRGtk2", version = "0.0-86", repos = "http://cran.us.r-project.org")
+install_version("rggobi", version = "2.1.22", repos = "http://cran.us.r-project.org")
+install_github("kavonrtep/SeqGrapheR")
+SeqGrapheR()
+#+end_src
 
 * How to run SeqGrapheR
 
